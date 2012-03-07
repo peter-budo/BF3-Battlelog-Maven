@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  
+	This file is part of BF3 Battlelog
+
+    BF3 Battlelog is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    BF3 Battlelog is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+>					
+	<LinearLayout
+        android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:orientation="vertical"
+	>
+		<TextView 
+			style="@style/FriendHeadingRow"
+			android:text="@string/info_credits_contributors"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="@string/info_credits_info"
+	       android:padding="10dp"
+		/>		
+		<TextView 
+			style="@style/FriendHeadingRow"
+			android:text="@string/info_credits_code"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="Lukas \'chokzor\' Larson"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="Peter Miklosko"
+	       android:padding="10dp"
+		/>
+		<TextView 
+			style="@style/FriendHeadingRow"
+			android:text="Graphics"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="Markus \'Markus96-1337\' Olszewski"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="Stephen \'Dbagjones\' Beaudet"
+	       android:padding="10dp"
+		/>
+		<TextView 
+			style="@style/FriendHeadingRow"
+			android:text="@string/info_credits_translations"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="Angelo Zangarini"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="Arnaud Ligny"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="artsipurtsi"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="bagione"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="basr"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="capalex &lt;@Lord_Gabriel>"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="Coval Delanight"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="Cuprax"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="cyrq"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="DarkoKukovec"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="federico"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="fysme"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="Klaus Thenmayer"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="kosmiq"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="Mirella Lindmark"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="neurokirurgi"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="pauldegroot"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="pingus"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="Ricket008"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="sangr1aman"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="waldzias"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="zAo82 &lt;sbkg0002@gmail.com>"
+	       android:padding="10dp"
+		/>
+		<TextView 
+	       android:layout_width="fill_parent"
+	       android:layout_height="wrap_content"
+	       android:text="zauriel"
+	       android:padding="10dp"
+		/>
+	</LinearLayout>
+</ScrollView>

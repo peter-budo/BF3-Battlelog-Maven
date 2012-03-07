@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--  
+	This file is part of BF3 Battlelog
+
+    BF3 Battlelog is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    BF3 Battlelog is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="80dp"
+>
+	<View
+	    android:id="@+id/divider_left"
+	    android:layout_width="10dp"
+	    android:layout_height="fill_parent"
+		android:layout_alignParentLeft="true"
+		android:background="#FF0000"
+	/>
+	<RelativeLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/divider_left"
+		android:padding="10dp"
+		android:layout_centerVertical="true"
+	>	
+		<TextView
+			android:id="@+id/text_unlock_title"
+			android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+			android:text="AK47-M"
+			android:textSize="18sp"
+		/>
+		<TextView
+			android:id="@+id/text_unlock_type"
+			android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+			android:text="Weapon attachment"
+			android:layout_alignParentRight="true"
+			android:layout_alignBaseline="@id/text_unlock_title"
+			android:visibility="gone"
+		/>
+		<TextView
+		    android:id="@+id/text_unlock_percent"
+			android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="97%"
+			android:layout_alignParentBottom="true"
+			android:layout_alignParentRight="true"
+			android:paddingLeft="10dp"
+		/>
+		<ProgressBar
+		    android:id="@+id/progress_unlock"
+		    style="?android:attr/progressBarStyleHorizontal"
+		    android:layout_width="fill_parent"
+		    android:layout_height="10dp"
+		    android:layout_toLeftOf="@id/text_unlock_percent" 
+			android:layout_alignParentBottom="true"
+    	/>
+		<TextView
+		    android:id="@+id/text_unlock_desc"
+			android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:text="Eat 200 (5 left) indian spices."
+		    android:layout_above="@id/progress_unlock"
+		    android:layout_below="@id/text_unlock_title"
+		/>
+	</RelativeLayout>
+</RelativeLayout>

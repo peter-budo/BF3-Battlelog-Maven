@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent"
+    android:id="@+id/dialog_root"
+    android:padding="10dp"
+    android:background="#FFFFFF"
+>
+    <EditText
+        android:id="@+id/field_username"
+        android:layout_height="wrap_content"
+        android:layout_width="250dp" 
+ 		android:hint="@string/info_hint_username"
+ 		android:singleLine="true"
+        android:layout_centerHorizontal="true">
+    </EditText>
+</RelativeLayout>
