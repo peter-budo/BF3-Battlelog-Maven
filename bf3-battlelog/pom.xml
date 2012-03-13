@@ -42,7 +42,7 @@
                         <platform>${sdk.platform}</platform>
                     </sdk>
                     <emulator>
-                        <avd>android2.2</avd>
+                        <avd>2.3.3</avd>
                     </emulator>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                 </configuration>
