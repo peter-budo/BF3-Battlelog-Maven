@@ -15,6 +15,7 @@
 package com.ninetwozero.battlelog.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,20 +24,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.UnlockData;
+import com.ninetwozero.battlelog.misc.Constants;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class UnlockListAdapter extends BaseAdapter {
 
     // Attributes
     private Context context;
-    private ArrayList<UnlockData> dataArray;
+    private List<UnlockData> dataArray;
     private LayoutInflater layoutInflater;
     private String tempStatus;
     private ProgressBar progressBar;
 
     // Construct
-    public UnlockListAdapter(Context c, ArrayList<UnlockData> u,
+    public UnlockListAdapter(Context c, List<UnlockData> u,
             LayoutInflater l) {
 
         context = c;
@@ -135,10 +137,12 @@ public class UnlockListAdapter extends BaseAdapter {
 
     }
 
-    public void setDataArray(ArrayList<UnlockData> data) {
+    public void setDataArray(List<UnlockData> data) {
 
         // Let's do this
-        this.dataArray = data;
+        Log.d(Constants.DEBUG_TAG, "New data y'all");
+        dataArray = data;
+        notifyDataSetChanged();
 
     }
 

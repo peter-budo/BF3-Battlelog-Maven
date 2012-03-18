@@ -17,7 +17,7 @@ package com.ninetwozero.battlelog.asynctasks;
 import android.os.AsyncTask;
 import com.ninetwozero.battlelog.datatypes.PostData;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
-import com.ninetwozero.battlelog.services.ChatService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncSessionSetActive extends
         AsyncTask<PostData, Integer, Boolean> {
@@ -31,7 +31,7 @@ public class AsyncSessionSetActive extends
 
         try {
 
-            return ChatService.setActive();
+            return WebsiteHandler.setActive();
 
         } catch (WebsiteHandlerException e) {
 

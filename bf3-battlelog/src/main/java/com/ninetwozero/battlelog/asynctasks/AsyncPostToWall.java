@@ -6,11 +6,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
-import com.ninetwozero.battlelog.PlatoonView;
-import com.ninetwozero.battlelog.ProfileView;
 import com.ninetwozero.battlelog.R;
-import com.ninetwozero.battlelog.services.CommentsService;
+import com.ninetwozero.battlelog.fragments.FeedFragment;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncPostToWall extends AsyncTask<String, Void, Boolean> {
 
@@ -21,12 +22,16 @@ public class AsyncPostToWall extends AsyncTask<String, Void, Boolean> {
     private boolean isPlatoon;
 
     // Data
+    private FeedFragment fragmentFeed;
     private long profileId;
+
+    // Elements
+    private Button buttonSend;
 
     // Error message
     private String error;
 
-    public AsyncPostToWall(Context c, long pId, boolean p) {
+    public AsyncPostToWall(Context c, long pId, boolean p, FeedFragment f) {
 
         context = c;
         origin = (Activity) context;
@@ -34,11 +39,21 @@ public class AsyncPostToWall extends AsyncTask<String, Void, Boolean> {
                 .getDefaultSharedPreferences(context);
         profileId = pId;
         isPlatoon = p;
+        fragmentFeed = f;
 
     }
 
     @Override
     protected void onPreExecute() {
+
+        if (context != null) {
+
+            buttonSend = (Button) fragmentFeed.getView().findViewById(R.id.button_send);
+            buttonSend.setText(R.string.label_sending);
+            buttonSend.setEnabled(false);
+
+        }
+
     }
 
     @Override
@@ -46,7 +61,7 @@ public class AsyncPostToWall extends AsyncTask<String, Void, Boolean> {
 
         try {
 
-            return CommentsService.postToWall(profileId, arg0[0], arg0[1],
+            return WebsiteHandler.postToWall(profileId, arg0[0], arg0[1],
                     isPlatoon);
 
         } catch (Exception ex) {
@@ -64,15 +79,18 @@ public class AsyncPostToWall extends AsyncTask<String, Void, Boolean> {
 
         // How'd it go?
         if (result) {
+            if (!isPlatoon) {
+                fragmentFeed.reload();
+            } else {
+                fragmentFeed.reload();
+            }
+
+            buttonSend.setText(R.string.label_send);
+            buttonSend.setEnabled(true);
+            ((EditText) fragmentFeed.getView().findViewById(R.id.field_message)).setText("");
 
             Toast.makeText(context, R.string.msg_feed_ok, Toast.LENGTH_SHORT)
                     .show();
-            if (!isPlatoon) {
-                ((ProfileView) context).reload();
-            } else {
-                ((PlatoonView) context).reload();
-            }
-
         } else {
 
             Toast.makeText(context, R.string.msg_feed_fail, Toast.LENGTH_SHORT)

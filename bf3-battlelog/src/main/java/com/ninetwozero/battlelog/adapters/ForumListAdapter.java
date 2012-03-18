@@ -24,17 +24,17 @@ import android.widget.TextView;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.Board;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ForumListAdapter extends BaseAdapter {
 
     // Attributes
     private Context context;
-    private ArrayList<Board.Forum> itemArray;
+    private List<Board.Forum> itemArray;
     private LayoutInflater layoutInflater;
 
     // Construct
-    public ForumListAdapter(Context c, ArrayList<Board.Forum> m,
+    public ForumListAdapter(Context c, List<Board.Forum> m,
             LayoutInflater l) {
 
         context = c;
@@ -122,7 +122,7 @@ public class ForumListAdapter extends BaseAdapter {
 
     }
 
-    public void setItemArray(ArrayList<Board.Forum> array) {
+    public void setItemArray(List<Board.Forum> array) {
 
         this.itemArray = array;
         this.notifyDataSetInvalidated();

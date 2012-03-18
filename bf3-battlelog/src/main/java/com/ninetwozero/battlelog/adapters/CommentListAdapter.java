@@ -27,20 +27,20 @@ import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.CommentData;
 import com.ninetwozero.battlelog.misc.PublicUtils;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class CommentListAdapter extends BaseAdapter {
 
     // Attributes
     private Context context;
-    private ArrayList<CommentData> comments;
+    private List<CommentData> comments;
     private LayoutInflater layoutInflater;
     private TextView textUsername, textMessage, textTimestamp;
     private ImageView imageAvatar;
     private String thisUser;
 
     // Construct
-    public CommentListAdapter(Context c, ArrayList<CommentData> cd,
+    public CommentListAdapter(Context c, List<CommentData> cd,
             LayoutInflater l) {
 
         context = c;

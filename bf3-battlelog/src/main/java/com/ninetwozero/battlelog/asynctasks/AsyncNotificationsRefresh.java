@@ -23,16 +23,17 @@ import android.widget.TextView;
 import com.ninetwozero.battlelog.adapters.NotificationListAdapter;
 import com.ninetwozero.battlelog.datatypes.NotificationData;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
-import com.ninetwozero.battlelog.services.NotificationsService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AsyncNotificationsRefresh extends
         AsyncTask<String, Integer, Boolean> {
 
     // Attribute
     private Context context;
-    private ArrayList<NotificationData> notifications = new ArrayList<NotificationData>();
+    private List<NotificationData> notifications = new ArrayList<NotificationData>();
     private ListView listNotifications;
     private TextView status;
     private LayoutInflater layoutInflater;
@@ -58,7 +59,7 @@ public class AsyncNotificationsRefresh extends
         try {
 
             // Let's get this!!
-            notifications = NotificationsService.getNotifications(arg0[0]);
+            notifications = WebsiteHandler.getNotifications(arg0[0]);
             return true;
 
         } catch (WebsiteHandlerException e) {

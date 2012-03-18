@@ -27,17 +27,17 @@ import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.FeedItem;
 import com.ninetwozero.battlelog.misc.PublicUtils;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class FeedListAdapter extends BaseAdapter {
 
     // Attributes
     private Context context;
-    private ArrayList<FeedItem> itemArray;
+    private List<FeedItem> itemArray;
     private LayoutInflater layoutInflater;
 
     // Construct
-    public FeedListAdapter(Context c, ArrayList<FeedItem> fi, LayoutInflater l) {
+    public FeedListAdapter(Context c, List<FeedItem> fi, LayoutInflater l) {
 
         context = c;
         itemArray = fi;
@@ -66,7 +66,7 @@ public class FeedListAdapter extends BaseAdapter {
 
     }
 
-    public void setItemArray(ArrayList<FeedItem> ia) {
+    public void setItemArray(List<FeedItem> ia) {
 
         this.itemArray = ia;
         this.notifyDataSetInvalidated();

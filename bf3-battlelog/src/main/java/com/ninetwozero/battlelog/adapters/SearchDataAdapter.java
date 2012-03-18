@@ -25,17 +25,17 @@ import com.ninetwozero.battlelog.datatypes.GeneralSearchResult;
 import com.ninetwozero.battlelog.datatypes.PlatoonData;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class SearchDataAdapter extends BaseAdapter {
 
     // Attributes
     private Context context;
-    private ArrayList<GeneralSearchResult> itemArray;
+    private List<GeneralSearchResult> itemArray;
     private LayoutInflater layoutInflater;
 
     // Construct
-    public SearchDataAdapter(Context c, ArrayList<GeneralSearchResult> m,
+    public SearchDataAdapter(Context c, List<GeneralSearchResult> m,
             LayoutInflater l) {
 
         context = c;
@@ -150,14 +150,14 @@ public class SearchDataAdapter extends BaseAdapter {
 
     }
 
-    public void setItemArray(ArrayList<GeneralSearchResult> array) {
+    public void setItemArray(List<GeneralSearchResult> array) {
 
         this.itemArray = array;
         this.notifyDataSetInvalidated();
 
     }
 
-    public void addItem(ArrayList<GeneralSearchResult> array) {
+    public void addItem(List<GeneralSearchResult> array) {
 
         this.itemArray.addAll(array);
 

@@ -20,7 +20,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
-import com.ninetwozero.battlelog.services.FriendsListService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncComRequest extends AsyncTask<String, Integer, Boolean> {
 
@@ -50,7 +50,7 @@ public class AsyncComRequest extends AsyncTask<String, Integer, Boolean> {
         try {
 
             // Let's get this!!
-            return FriendsListService.answerFriendRequest(profileId, response,
+            return WebsiteHandler.answerFriendRequest(profileId, response,
                     arg0[0]);
 
         } catch (WebsiteHandlerException e) {

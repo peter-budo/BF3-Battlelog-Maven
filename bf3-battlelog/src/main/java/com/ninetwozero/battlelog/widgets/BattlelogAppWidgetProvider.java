@@ -35,10 +35,9 @@ import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
 import com.ninetwozero.battlelog.misc.Constants;
 import com.ninetwozero.battlelog.misc.RequestHandler;
 import com.ninetwozero.battlelog.misc.SessionKeeper;
-import com.ninetwozero.battlelog.services.FriendsListService;
-import com.ninetwozero.battlelog.services.UserProfileService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class BattlelogAppWidgetProvider extends AppWidgetProvider {
 
@@ -63,7 +62,7 @@ public class BattlelogAppWidgetProvider extends AppWidgetProvider {
         RemoteViews remoteView = null;
         ProfileData profileData = null;
         PersonaStats playerData = null;
-        ArrayList<ProfileData> profileDataArray = null;
+        List<ProfileData> profileDataArray = null;
         SharedPreferences sharedPreferences = null;
         ComponentName BattlelogListWidget;
         int numFriendsOnline = 0;
@@ -90,7 +89,7 @@ public class BattlelogAppWidgetProvider extends AppWidgetProvider {
                     res.getString(R.string.info_connect_bl));
             remoteView.setTextColor(R.id.friends, Color.RED);
             remoteView.setTextViewText(R.id.friends, "0");
-            
+
         } else {
 
             // Let's update it
@@ -108,7 +107,7 @@ public class BattlelogAppWidgetProvider extends AppWidgetProvider {
 
             try {
 
-                playerData = UserProfileService.getStatsForPersona(SessionKeeper
+                playerData = WebsiteHandler.getStatsForPersona(SessionKeeper
                         .getProfileData());
                 remoteView.setTextViewText(
 
@@ -126,11 +125,11 @@ public class BattlelogAppWidgetProvider extends AppWidgetProvider {
                                 R.id.stats,
                                 ("W/L: " + Math.floor(playerData.getWLRatio() * 100) / 100
                                         + "  K/D: " + Math.floor(playerData.getKDRatio() * 100) / 100));
-                profileDataArray = FriendsListService.getFriends(
+                profileDataArray = WebsiteHandler.getFriends(
 
                         sharedPreferences.getString(Constants.SP_BL_CHECKSUM, ""), true
 
-                );
+                        );
                 numFriendsOnline = profileDataArray.size();
 
             } catch (WebsiteHandlerException e) {

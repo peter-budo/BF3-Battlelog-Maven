@@ -12,7 +12,7 @@ import com.ninetwozero.battlelog.ProfileView;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
 import com.ninetwozero.battlelog.misc.Constants;
-import com.ninetwozero.battlelog.services.UserProfileService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncFetchDataToProfileView extends
         AsyncTask<String, Void, Boolean> {
@@ -54,12 +54,12 @@ public class AsyncFetchDataToProfileView extends
         try {
 
             // Post the world!
-            userData = UserProfileService.getProfileIdFromSearch(
+            userData = WebsiteHandler.getProfileIdFromSearch(
 
                     searchString,
                     sharedPreferences.getString(Constants.SP_BL_CHECKSUM, "")
 
-            );
+                    );
 
             // Did we get an actual user?
             if (userData == null || userData.getPersonaId() == 0) {

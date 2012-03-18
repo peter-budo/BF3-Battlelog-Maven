@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.ninetwozero.battlelog.datatypes.PostData;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
 import com.ninetwozero.battlelog.misc.Constants;
-import com.ninetwozero.battlelog.services.ChatService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 import net.sf.andhsli.hotspotlogin.SimpleCrypto;
 
 public class AsyncSessionValidate extends AsyncTask<PostData, Integer, Boolean> {
@@ -46,7 +46,7 @@ public class AsyncSessionValidate extends AsyncTask<PostData, Integer, Boolean> 
 
         try {
 
-            return ChatService.setActive();
+            return WebsiteHandler.setActive();
 
         } catch (WebsiteHandlerException e) {
 

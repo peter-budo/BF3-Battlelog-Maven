@@ -52,36 +52,35 @@ public class SessionKeeper {
         String[] platformIdArray = platformIdString.split(":");
 
         // How many do we have?
-        int max = ( personaIdString.equals( "" ) ) ? 0 : personaIdArray.length;
-        
+        int max = (personaIdString.equals("")) ? 0 : personaIdArray.length;
+
         // We need to init the resulting arrays
         long[] personaId = new long[max];
-        long[] platformId = new long[max];
-        
+        int[] platformId = new int[max];
+
         // ...and populate them
         for (int i = 0; i < max; i++) {
 
             personaId[i] = Long.parseLong(personaIdArray[i]);
-            platformId[i] = Long.parseLong(platformIdArray[i]);
+            platformId[i] = Integer.parseInt(platformIdArray[i]);
 
         }
 
-        //If we even *might* have a session
-        if( !cookie.equals("") ) {
-            
-            
+        // If we even *might* have a session
+        if (!cookie.equals("")) {
+
             return new ProfileData(
 
-                sp.getString(Constants.SP_BL_USERNAME, ""), personaNameArray,
-                personaId, sp.getLong(Constants.SP_BL_PROFILE_ID, 0),
-                platformId, sp.getString(Constants.SP_BL_GRAVATAR, "")
+                    sp.getString(Constants.SP_BL_USERNAME, ""), personaNameArray,
+                    personaId, sp.getLong(Constants.SP_BL_PROFILE_ID, 0),
+                    platformId, sp.getString(Constants.SP_BL_GRAVATAR, "")
 
             );
-            
+
         } else {
-            
+
             return null;
-            
+
         }
 
     }

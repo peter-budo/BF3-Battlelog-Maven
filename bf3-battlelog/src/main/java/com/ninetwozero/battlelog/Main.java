@@ -1,11 +1,11 @@
 /*
  * This file is part of BF3 Battlelog
- *
+ * 
  * BF3 Battlelog is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * 
  * BF3 Battlelog is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -14,7 +14,6 @@
 
 package com.ninetwozero.battlelog;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -22,9 +21,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -33,40 +35,51 @@ import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
-import android.widget.TabHost.TabContentFactory;
 import com.coveragemapper.android.Map.ExternalCacheDirectory;
 import com.ninetwozero.battlelog.asynctasks.AsyncLogin;
+import com.ninetwozero.battlelog.datatypes.DefaultFragmentActivity;
 import com.ninetwozero.battlelog.datatypes.PostData;
 import com.ninetwozero.battlelog.datatypes.ShareableCookie;
+import com.ninetwozero.battlelog.fragments.AboutCreditsFragment;
+import com.ninetwozero.battlelog.fragments.AboutFAQFragment;
+import com.ninetwozero.battlelog.fragments.AboutMainFragment;
 import com.ninetwozero.battlelog.misc.Constants;
 import com.ninetwozero.battlelog.misc.PublicUtils;
 import com.ninetwozero.battlelog.misc.RequestHandler;
 import com.ninetwozero.battlelog.misc.SessionKeeper;
+import net.peterkuterna.android.apps.swipeytabs.SwipeyTabs;
+import net.peterkuterna.android.apps.swipeytabs.SwipeyTabsPagerAdapter;
 import net.sf.andhsli.hotspotlogin.SimpleCrypto;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.List;
+import java.util.Vector;
 
-public class Main extends Activity {
+public class Main extends FragmentActivity implements DefaultFragmentActivity {
 
-    // Fields
+    // Attributes
+    private String[] valueFields;
+    private PostData[] postDataArray;
+    private SharedPreferences sharedPreferences;
+    
+    // Elements
     private EditText fieldEmail, fieldPassword;
     private CheckBox checkboxSave;
     private SlidingDrawer slidingDrawer;
-    private TabHost cTabHost;
     private LayoutInflater layoutInflater;
     private OnDrawerOpenListener onDrawerOpenListener;
     private OnDrawerCloseListener onDrawerCloseListener;
     private TextView slidingDrawerHandle;
 
-    // Values
-    private String[] valueFields;
-    private PostData[] postDataArray;
-
-    // SP
-    private SharedPreferences sharedPreferences;
+    // Fragment related
+    private SwipeyTabs tabs;
+    private SwipeyTabsPagerAdapter pagerAdapter;
+    private List<Fragment> listFragments;
+    private FragmentManager fragmentManager;
+    private AboutMainFragment fragmentAbout;
+    private AboutFAQFragment fragmentFAQ;
+    private AboutCreditsFragment fragmentCredits;
+    private ViewPager viewPager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,9 +89,11 @@ public class Main extends Activity {
 
         // Set sharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        fragmentManager = getSupportFragmentManager();
 
         // Setup the locale
-        setupLocale();
+        PublicUtils.setupLocale(this, sharedPreferences);
 
         // Set the content view
         setContentView(R.layout.main);
@@ -100,21 +115,9 @@ public class Main extends Activity {
         changeLogDialog();
 
         // Let's populate... or shall we not?
-        populateFields();
+        initActivity();
 
-        layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        cTabHost = (TabHost) findViewById(R.id.com_tabhost);
-        cTabHost.setup();
-
-        setupTabsSecondary(new String[] {
-                getString(R.string.label_about),
-                getString(R.string.label_faq),
-                getString(R.string.label_credits)
-        }, new int[] {
-                R.layout.tab_content_main_about, R.layout.tab_content_main_faq,
-                R.layout.tab_content_main_credits
-        });
-
+        //Setup the drawer
         setupDrawer();
 
     }
@@ -128,7 +131,7 @@ public class Main extends Activity {
 
     }
 
-    private void populateFields() {
+    public void initActivity() {
 
         // Get the fields
         fieldEmail = (EditText) findViewById(R.id.field_email);
@@ -326,40 +329,8 @@ public class Main extends Activity {
             // Attach the listeners
             slidingDrawer.setOnDrawerOpenListener(onDrawerOpenListener);
             slidingDrawer.setOnDrawerCloseListener(onDrawerCloseListener);
-        }
-    }
-
-    private void setupTabsSecondary(final String[] titleArray,
-            final int[] layoutArray) {
-
-        // Init
-        TabHost.TabSpec spec;
-
-        // Iterate them tabs
-        for (int i = 0, max = titleArray.length; i < max; i++) {
-
-            // Num
-            final int num = i;
-            View tabview = createTabView(cTabHost.getContext(), titleArray[num]);
-
-            // Let's set the content
-            spec = cTabHost.newTabSpec(titleArray[num]).setIndicator(tabview)
-                    .setContent(
-
-                            new TabContentFactory() {
-
-                                public View createTabContent(String tag) {
-
-                                    return layoutInflater.inflate(layoutArray[num],
-                                            null);
-                                }
-
-                            }
-
-                    );
-
-            // Add the tab
-            cTabHost.addTab(spec);
+            
+            setupFragments();
         }
     }
 
@@ -424,43 +395,6 @@ public class Main extends Activity {
         return true;
     }
 
-    public void onContactClick(View v) {
-
-        final Map<Integer, Intent> SOCIAL_INTENTS = new HashMap<Integer, Intent>() {
-
-            {
-
-                put(R.id.wrap_web,
-                        new Intent(Intent.ACTION_VIEW, Uri
-                                .parse("http://www.ninetwozero.com")));
-                put(R.id.wrap_twitter,
-                        new Intent(Intent.ACTION_VIEW, Uri
-                                .parse("https://www.twitter.com/karllindmark")));
-                put(R.id.wrap_email, Intent.createChooser(
-                        new Intent(Intent.ACTION_SENDTO, Uri
-                                .parse("mailto:support@ninetwozero.com")),
-                        getString(R.string.info_txt_email_send)));
-
-                put(R.id.wrap_forum,
-                        new Intent(Intent.ACTION_VIEW, Uri
-                                .parse("http://www.ninetwozero.com/forum")));
-                put(R.id.wrap_xbox,
-                        new Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse("http://live.xbox.com/en-US/Profile?gamertag=NINETWOZERO")));
-                put(R.id.wrap_paypal,
-                        new Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y8GLB993JKTCL")));
-            }
-        };
-
-        // Is it in the HashMap?
-        if (SOCIAL_INTENTS.containsKey(v.getId())) {
-            startActivity(SOCIAL_INTENTS.get(v.getId()));
-        }
-    }
-
     public final Dialog createChangelogDialog() {
 
         // Attributes
@@ -471,7 +405,7 @@ public class Main extends Activity {
 
         // Set the title and the view
         builder.setTitle(getString(R.string.general_changelog_version)
-                + " 1.0." + Constants.CHANGELOG_VERSION);
+                + Constants.CHANGELOG_VERSION);
 
         // Grab the fields
         final TextView textView = (TextView) layout
@@ -500,16 +434,6 @@ public class Main extends Activity {
         AlertDialog theDialog = builder.create();
         theDialog.setView(layout, 0, 0, 0, 0);
         return theDialog;
-
-    }
-
-    private final View createTabView(final Context context, final String text) {
-
-        View view = LayoutInflater.from(context).inflate(
-                R.layout.profile_tab_layout, null);
-        TextView tv = (TextView) view.findViewById(R.id.tabsText);
-        tv.setText(text);
-        return view;
 
     }
 
@@ -543,24 +467,53 @@ public class Main extends Activity {
         super.onResume();
 
         // Setup the locale
-        setupLocale();
+        PublicUtils.setupLocale(this, sharedPreferences);
 
     }
+    
+    @Override
+    public void setupFragments() {
+        
+        // Do we need to setup the fragments?
+        if (listFragments == null) {
 
-    public void setupLocale() {
+            // Add them to the list
+            listFragments = new Vector<Fragment>();
+            listFragments.add(fragmentAbout = (AboutMainFragment) Fragment.instantiate(this,
+                    AboutMainFragment.class.getName()));
+            listFragments.add(fragmentFAQ = (AboutFAQFragment) Fragment.instantiate(this,
+                    AboutFAQFragment.class.getName()));
+            listFragments.add(fragmentCredits = (AboutCreditsFragment) Fragment.instantiate(this,
+                    AboutCreditsFragment.class.getName()));
 
-        if (!sharedPreferences.getString(Constants.SP_BL_LANG, "").equals("")) {
+            // Get the ViewPager
+            viewPager = (ViewPager) findViewById(R.id.viewpager_sub);
+            tabs = (SwipeyTabs) findViewById(R.id.swipeytabs_sub);
 
-            Locale locale = new Locale(sharedPreferences.getString(
-                    Constants.SP_BL_LANG, "en"));
-            Locale.setDefault(locale);
-            Configuration config = new Configuration();
-            config.locale = locale;
-            getResources().updateConfiguration(config,
-                    getResources().getDisplayMetrics());
+            // Fill the PagerAdapter & set it to the viewpager
+            pagerAdapter = new SwipeyTabsPagerAdapter(
+
+                    fragmentManager,
+                    new String[] {
+                            "About", "FAQ", "Credits"
+                    },
+                    listFragments,
+                    viewPager,
+                    layoutInflater
+                    );
+            viewPager.setAdapter(pagerAdapter);
+            tabs.setAdapter(pagerAdapter);
+
+            // Make sure the tabs follow
+            viewPager.setOnPageChangeListener(tabs);
+            viewPager.setCurrentItem(0);
+            viewPager.setOffscreenPageLimit(2);
 
         }
-
+        
     }
+
+    @Override
+    public void reload() {}
 
 }

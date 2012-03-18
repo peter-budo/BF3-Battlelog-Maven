@@ -27,16 +27,17 @@ import com.ninetwozero.battlelog.adapters.ChatListAdapter;
 import com.ninetwozero.battlelog.datatypes.ChatMessage;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
 import com.ninetwozero.battlelog.misc.Constants;
-import com.ninetwozero.battlelog.services.ChatService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AsyncChatRefresh extends AsyncTask<Long, Integer, Boolean> {
 
     // Attribute
     private Context context;
     private SharedPreferences sharedPreferences;
-    private ArrayList<ChatMessage> messageArray = new ArrayList<ChatMessage>();
+    private List<ChatMessage> messageArray = new ArrayList<ChatMessage>();
     private ListView listView;
     private LayoutInflater layoutInflater;
     private String username; // The user that's using the chat on "this" end
@@ -62,7 +63,7 @@ public class AsyncChatRefresh extends AsyncTask<Long, Integer, Boolean> {
         try {
 
             // Let's get this!!
-            messageArray = ChatService.getChatMessages(chatId[0],
+            messageArray = WebsiteHandler.getChatMessages(chatId[0],
                     sharedPreferences.getString(Constants.SP_BL_CHECKSUM, ""));
             return true;
 

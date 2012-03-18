@@ -23,19 +23,19 @@ import android.widget.TextView;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class FriendListAdapter extends BaseAdapter {
 
     // Attributes
     private Context context;
-    private ArrayList<ProfileData> profileArray;
+    private List<ProfileData> profileArray;
     private LayoutInflater layoutInflater;
     private String tempStatus;
     private TextView textUser, textStatus;
 
     // Construct
-    public FriendListAdapter(Context c, ArrayList<ProfileData> p,
+    public FriendListAdapter(Context c, List<ProfileData> p,
             LayoutInflater l) {
 
         context = c;
@@ -166,7 +166,7 @@ public class FriendListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setItemArray(ArrayList<ProfileData> data) {
+    public void setItemArray(List<ProfileData> data) {
         this.profileArray = data;
     }
 

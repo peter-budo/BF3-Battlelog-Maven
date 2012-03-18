@@ -19,7 +19,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
-import com.ninetwozero.battlelog.services.PlatoonService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncPlatoonRequest extends AsyncTask<Boolean, Integer, Integer> {
 
@@ -54,12 +54,12 @@ public class AsyncPlatoonRequest extends AsyncTask<Boolean, Integer, Integer> {
             // Let's get this!!
             if (isJoinRequest) {
 
-                return PlatoonService.applyForPlatoonMembership(platoonId,
+                return WebsiteHandler.applyForPlatoonMembership(platoonId,
                         checksum);
 
             } else {
 
-                return PlatoonService.closePlatoonMembership(platoonId,
+                return WebsiteHandler.closePlatoonMembership(platoonId,
                         profileId, checksum) ? 0 : -1;
 
             }

@@ -4,7 +4,10 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
 import android.test.suitebuilder.annotation.Suppress;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.SlidingDrawer;
 import com.jayway.android.robotium.solo.Solo;
 
 import static android.test.MoreAsserts.assertMatchesRegex;

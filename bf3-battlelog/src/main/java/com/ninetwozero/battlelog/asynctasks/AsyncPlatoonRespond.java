@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.ninetwozero.battlelog.PlatoonView;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
-import com.ninetwozero.battlelog.services.PlatoonService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncPlatoonRespond extends AsyncTask<String, Integer, Boolean> {
 
@@ -51,7 +51,7 @@ public class AsyncPlatoonRespond extends AsyncTask<String, Integer, Boolean> {
         try {
 
             // Let's get this!!
-            return PlatoonService.answerPlatoonRequest(platoonId, profileId,
+            return WebsiteHandler.answerPlatoonRequest(platoonId, profileId,
                     response, arg0[0]);
 
         } catch (WebsiteHandlerException e) {

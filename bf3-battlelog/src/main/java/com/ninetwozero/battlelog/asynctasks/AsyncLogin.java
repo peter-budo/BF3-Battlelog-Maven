@@ -27,7 +27,7 @@ import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.PostData;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
-import com.ninetwozero.battlelog.services.UserProfileService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncLogin extends AsyncTask<PostData, Integer, Boolean> {
 
@@ -38,6 +38,7 @@ public class AsyncLogin extends AsyncTask<PostData, Integer, Boolean> {
     private boolean savePassword;
     private ProfileData profile;
     private String locale;
+    private String errorMessage;
 
     // Constructor
     public AsyncLogin(Context c) {
@@ -85,13 +86,14 @@ public class AsyncLogin extends AsyncTask<PostData, Integer, Boolean> {
 
         try {
 
-            profile = UserProfileService.doLogin(context, arg0, savePassword);
+            profile = WebsiteHandler.doLogin(context, arg0, savePassword);
 
             // Did it go ok?
             return (profile != null);
 
-        } catch (WebsiteHandlerException e) {
+        } catch (WebsiteHandlerException ex) {
 
+            errorMessage = ex.getMessage();
             return false;
 
         }
@@ -127,7 +129,7 @@ public class AsyncLogin extends AsyncTask<PostData, Integer, Boolean> {
 
         } else {
 
-            Toast.makeText(context, R.string.msg_login_fail, Toast.LENGTH_SHORT)
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT)
                     .show();
 
         }

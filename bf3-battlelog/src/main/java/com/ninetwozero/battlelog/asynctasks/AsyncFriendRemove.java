@@ -18,7 +18,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 import com.ninetwozero.battlelog.R;
-import com.ninetwozero.battlelog.services.FriendsListService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncFriendRemove extends AsyncTask<String, Integer, Boolean> {
 
@@ -44,7 +44,7 @@ public class AsyncFriendRemove extends AsyncTask<String, Integer, Boolean> {
 
         try {
 
-            return FriendsListService.removeFriend(profileId);
+            return WebsiteHandler.removeFriend(profileId);
 
         } catch (Exception ex) {
 

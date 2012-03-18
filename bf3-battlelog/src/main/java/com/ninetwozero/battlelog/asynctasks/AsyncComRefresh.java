@@ -32,9 +32,9 @@ import com.ninetwozero.battlelog.datatypes.FriendListDataWrapper;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
 import com.ninetwozero.battlelog.misc.Constants;
-import com.ninetwozero.battlelog.services.FriendsListService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class AsyncComRefresh extends AsyncTask<Void, Integer, Boolean> {
 
@@ -76,7 +76,7 @@ public class AsyncComRefresh extends AsyncTask<Void, Integer, Boolean> {
         try {
 
             // Let's get this!!
-            profileArray = FriendsListService.getFriendsCOM(context,
+            profileArray = WebsiteHandler.getFriendsCOM(context,
                     sharedPreferences.getString(Constants.SP_BL_CHECKSUM, ""));
             return true;
 
@@ -124,7 +124,7 @@ public class AsyncComRefresh extends AsyncTask<Void, Integer, Boolean> {
                         .setVisibility(View.VISIBLE);
 
                 // Create a copy so that we can merge later on
-                ArrayList<ProfileData> mergedArray = profileArray
+                List<ProfileData> mergedArray = profileArray
                         .getOnlineFriends();
 
                 // ...but first we want the lenght, oorah!

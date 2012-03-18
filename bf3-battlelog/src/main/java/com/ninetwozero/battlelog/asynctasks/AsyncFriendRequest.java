@@ -18,7 +18,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 import com.ninetwozero.battlelog.R;
-import com.ninetwozero.battlelog.services.FriendsListService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncFriendRequest extends AsyncTask<String, Integer, Boolean> {
 
@@ -44,7 +44,7 @@ public class AsyncFriendRequest extends AsyncTask<String, Integer, Boolean> {
 
         try {
 
-            return FriendsListService.sendFriendRequest(profileId, arg0[0]);
+            return WebsiteHandler.sendFriendRequest(profileId, arg0[0]);
 
         } catch (Exception ex) {
 

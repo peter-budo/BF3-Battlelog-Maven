@@ -17,9 +17,9 @@ package com.ninetwozero.battlelog.asynctasks;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
-import com.ninetwozero.battlelog.ForumView;
+import com.ninetwozero.battlelog.Backup_ForumView;
 import com.ninetwozero.battlelog.R;
-import com.ninetwozero.battlelog.services.ForumService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncCreateNewThread extends AsyncTask<String, Void, Boolean> {
 
@@ -41,11 +41,11 @@ public class AsyncCreateNewThread extends AsyncTask<String, Void, Boolean> {
         try {
 
             // How'd it go?
-            return ForumService.createNewThreadInForum(
+            return WebsiteHandler.createNewThreadInForum(
 
                     this.context, arg0[0], arg0[1], arg0[2], this.forumId
 
-            );
+                    );
 
         } catch (Exception ex) {
 
@@ -64,10 +64,10 @@ public class AsyncCreateNewThread extends AsyncTask<String, Void, Boolean> {
 
             Toast.makeText(this.context, R.string.info_forum_newthread_true,
                     Toast.LENGTH_SHORT).show();
-            if (context instanceof ForumView) {
+            if (context instanceof Backup_ForumView) {
 
-                ((ForumView) this.context).manualReload();
-                ((ForumView) this.context).resetPostFields();
+                ((Backup_ForumView) this.context).manualReload();
+                ((Backup_ForumView) this.context).resetPostFields();
             }
 
         } else {

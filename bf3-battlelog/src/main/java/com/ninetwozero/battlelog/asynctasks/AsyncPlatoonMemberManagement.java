@@ -17,7 +17,7 @@ package com.ninetwozero.battlelog.asynctasks;
 import android.content.Context;
 import android.os.AsyncTask;
 import com.ninetwozero.battlelog.PlatoonView;
-import com.ninetwozero.battlelog.services.PlatoonService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncPlatoonMemberManagement extends
         AsyncTask<Boolean, Void, Boolean> {
@@ -47,17 +47,17 @@ public class AsyncPlatoonMemberManagement extends
 
                 if (arg0.length == 0) {
 
-                    return PlatoonService.alterPlatoonMembership(userId,
+                    return WebsiteHandler.alterPlatoonMembership(userId,
                             platoonId, 2);
 
                 } else if (!arg0[0]) {
 
-                    return PlatoonService.alterPlatoonMembership(userId,
+                    return WebsiteHandler.alterPlatoonMembership(userId,
                             platoonId, 1);
 
                 } else {
 
-                    return PlatoonService.alterPlatoonMembership(userId,
+                    return WebsiteHandler.alterPlatoonMembership(userId,
                             platoonId, 0);
 
                 }

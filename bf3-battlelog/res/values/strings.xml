@@ -47,6 +47,7 @@
         <item >@string/label_update_interval_minutes_2</item>
     </string-array>
     <string-array name="language_titles">
+        <item >Česky</item>
         <item >Cрпски</item>
         <item >Dansk</item>
         <item >Deutsch</item>
@@ -63,6 +64,7 @@
         <item >Svenska</item>
     </string-array>
      <string-array name="language_values">
+        <item >cs</item>
         <item >sr</item>
         <item >da</item>
         <item >de</item>
@@ -512,4 +514,13 @@
 	<string name="info_settings_notification_title_sounds">Enable sounds</string>
 	<string name="info_settings_notification_title_sounds_spec">Use the Battlelog beep</string>
 	<string name="info_settings_notification_title_vibration">Enable vibration</string>
+	<string name="info_settings_update_interval">Select an update interval</string>
+	<string name="label_goto_item">Goto item</string>
+	<string name="label_post">Post</string>
+	<string name="info_feed_title_global">Latest events</string>
+	<string name="info_singlepost_comments">Comments</string>
+	<string name="info_credits_graphics">Graphics</string>
+	<string name="info_credits_nolink">No link to send you to!</string>
+	<string name="info_news_empty">No news found.</string>
+	<string name="info_news_posted_by">Posted by &lt;b>{author}&lt;/b> {date}</string>
 </resources>

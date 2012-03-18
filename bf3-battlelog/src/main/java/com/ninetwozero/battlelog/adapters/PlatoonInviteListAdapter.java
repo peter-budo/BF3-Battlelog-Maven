@@ -23,17 +23,17 @@ import android.widget.TextView;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class PlatoonInviteListAdapter extends BaseAdapter {
 
     // Attributes
     private Context context;
-    private ArrayList<ProfileData> profileArray;
+    private List<ProfileData> profileArray;
     private LayoutInflater layoutInflater;
 
     // Construct
-    public PlatoonInviteListAdapter(Context c, ArrayList<ProfileData> p,
+    public PlatoonInviteListAdapter(Context c, List<ProfileData> p,
             LayoutInflater l) {
 
         context = c;
@@ -101,7 +101,7 @@ public class PlatoonInviteListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setItemArray(ArrayList<ProfileData> data) {
+    public void setItemArray(List<ProfileData> data) {
         this.profileArray = data;
     }
 

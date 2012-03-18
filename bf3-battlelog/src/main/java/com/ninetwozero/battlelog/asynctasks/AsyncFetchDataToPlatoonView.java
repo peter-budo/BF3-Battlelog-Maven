@@ -12,7 +12,7 @@ import com.ninetwozero.battlelog.PlatoonView;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.PlatoonData;
 import com.ninetwozero.battlelog.misc.Constants;
-import com.ninetwozero.battlelog.services.PlatoonService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncFetchDataToPlatoonView extends
         AsyncTask<String, Void, Boolean> {
@@ -54,12 +54,12 @@ public class AsyncFetchDataToPlatoonView extends
         try {
 
             // Post the world!
-            platoon = PlatoonService.getPlatoonIdFromSearch(
+            platoon = WebsiteHandler.getPlatoonIdFromSearch(
 
                     searchString,
                     sharedPreferences.getString(Constants.SP_BL_CHECKSUM, "")
 
-            );
+                    );
 
             // Did we get an actual user?
             if (platoon == null || platoon.getId() == 0) {

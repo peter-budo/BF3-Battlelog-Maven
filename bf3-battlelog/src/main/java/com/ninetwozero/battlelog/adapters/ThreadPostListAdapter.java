@@ -25,17 +25,17 @@ import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.Board;
 import com.ninetwozero.battlelog.misc.PublicUtils;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ThreadPostListAdapter extends BaseAdapter {
 
     // Attributes
     private Context context;
-    private ArrayList<Board.PostData> itemArray;
+    private List<Board.PostData> itemArray;
     private LayoutInflater layoutInflater;
 
     // Construct
-    public ThreadPostListAdapter(Context c, ArrayList<Board.PostData> m,
+    public ThreadPostListAdapter(Context c, List<Board.PostData> m,
             LayoutInflater l) {
 
         context = c;
@@ -147,14 +147,14 @@ public class ThreadPostListAdapter extends BaseAdapter {
 
     }
 
-    public void set(ArrayList<Board.PostData> array) {
+    public void set(List<Board.PostData> array) {
 
         this.itemArray = array;
         this.notifyDataSetChanged();
 
     }
 
-    public void add(ArrayList<Board.PostData> array) {
+    public void add(List<Board.PostData> array) {
 
         this.itemArray.addAll(array);
         this.notifyDataSetChanged();

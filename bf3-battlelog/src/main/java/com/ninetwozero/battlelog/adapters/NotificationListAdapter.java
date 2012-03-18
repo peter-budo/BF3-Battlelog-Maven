@@ -25,20 +25,20 @@ import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.NotificationData;
 import com.ninetwozero.battlelog.misc.PublicUtils;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class NotificationListAdapter extends BaseAdapter {
 
     // Attributes
     private Context context;
-    private ArrayList<NotificationData> itemArray;
+    private List<NotificationData> itemArray;
     private LayoutInflater layoutInflater;
     private String tempStatus;
     private TextView textPersona, textStatus;
     private long activeUserId;
 
     // Construct
-    public NotificationListAdapter(Context c, ArrayList<NotificationData> fi,
+    public NotificationListAdapter(Context c, List<NotificationData> fi,
             LayoutInflater l, long auid) {
 
         context = c;
@@ -69,7 +69,7 @@ public class NotificationListAdapter extends BaseAdapter {
 
     }
 
-    public void setItemArray(ArrayList<NotificationData> ia) {
+    public void setItemArray(List<NotificationData> ia) {
         this.itemArray = ia;
     }
 

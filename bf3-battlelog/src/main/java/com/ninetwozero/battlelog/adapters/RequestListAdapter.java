@@ -24,17 +24,17 @@ import android.widget.TextView;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class RequestListAdapter extends BaseAdapter {
 
     // Attributes
     private Context context;
-    private ArrayList<ProfileData> profileArray;
+    private List<ProfileData> profileArray;
     private LayoutInflater layoutInflater;
 
     // Construct
-    public RequestListAdapter(Context c, ArrayList<ProfileData> p,
+    public RequestListAdapter(Context c, List<ProfileData> p,
             LayoutInflater l) {
 
         context = c;
@@ -101,7 +101,7 @@ public class RequestListAdapter extends BaseAdapter {
 
     }
 
-    public void setItemArray(ArrayList<ProfileData> p) {
+    public void setItemArray(List<ProfileData> p) {
         this.profileArray = p;
     }
 

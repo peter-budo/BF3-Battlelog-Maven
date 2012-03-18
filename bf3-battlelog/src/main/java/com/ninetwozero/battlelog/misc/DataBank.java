@@ -15,13 +15,19 @@
 package com.ninetwozero.battlelog.misc;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import com.ninetwozero.battlelog.R;
+import com.ninetwozero.battlelog.datatypes.AppContributorData;
 import com.ninetwozero.battlelog.datatypes.PlatformData;
 import com.ninetwozero.battlelog.datatypes.VehicleType;
 import com.ninetwozero.battlelog.datatypes.WeaponType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DataBank {
 
@@ -105,32 +111,42 @@ public class DataBank {
     public static String[] getLocales() {
         return LOCALES;
     }
+    
+    public static Intent getContactIntent(int res) {
+        
+        return CONTACT_INTENTS.get(res);
+        
+    }
 
     // Maps
     private static PlatformData[] PLATFORMS;
     private static String[] LANGUAGES;
     private static String[] LOCALES;
-    private static HashMap<String, String> RANKS;
-    private static HashMap<String, VehicleType> VEHICLES;
-    private static HashMap<String, String> KIT_ITEMS;
-    private static HashMap<String, String> SKILLS;
-    private static HashMap<String, String> VEHICLE_ADDONS;
-    private static HashMap<String, String> WEAPON_ATTACHMENTS;
-    private static HashMap<String, WeaponType> WEAPONS;
-    private static HashMap<String, String> WEAPONS_SHORT;
-    private static HashMap<String, String> UNLOCK_GOALS;
-    private static HashMap<String, String> AWARDS;
-    private static HashMap<String, String> MAPS;
-    private static HashMap<String, String> COOP_DATA;
-    private static HashMap<String, String> DIFFICULTY_MAP;
-    private static HashMap<String, String[]> ASSIGNMENTS;
-    private static HashMap<String, String> CRITERIAS;
-    private static HashMap<String, String> EXPANSION;
+    private static List<AppContributorData> APP_CONTRIBUTORS;
+    private static Map<Integer, Intent> CONTACT_INTENTS;
+    private static Map<String, String> RANKS;
+    private static Map<String, VehicleType> VEHICLES;
+    private static Map<String, String> KIT_ITEMS;
+    private static Map<String, String> SKILLS;
+    private static Map<String, String> VEHICLE_ADDONS;
+    private static Map<String, String> WEAPON_ATTACHMENTS;
+    private static Map<String, WeaponType> WEAPONS;
+    private static Map<String, String> WEAPONS_SHORT;
+    private static Map<String, String> UNLOCK_GOALS;
+    private static Map<String, String> AWARDS;
+    private static Map<String, String> MAPS;
+    private static Map<String, String> COOP_DATA;
+    private static Map<String, String> DIFFICULTY_MAP;
+    private static Map<String, String[]> ASSIGNMENTS;
+    private static Map<String, String> CRITERIAS;
+    private static Map<String, String> EXPANSION;
 
     static {
 
         // Init!
         PLATFORMS = new PlatformData[4];
+        CONTACT_INTENTS = new HashMap<Integer, Intent>();
+        APP_CONTRIBUTORS = new ArrayList<AppContributorData>();
         WEAPONS = new HashMap<String, WeaponType>();
         VEHICLES = new HashMap<String, VehicleType>();
         RANKS = new HashMap<String, String>();
@@ -163,6 +179,67 @@ public class DataBank {
         PLATFORMS[1] = new PlatformData(2, "xbox");
         PLATFORMS[2] = new PlatformData(1, "");
         PLATFORMS[3] = new PlatformData(4, "ps3");
+
+        // CONTACT INTENTS
+        CONTACT_INTENTS.put(R.id.wrap_web,
+                new Intent(Intent.ACTION_VIEW, Uri
+                        .parse("http://www.ninetwozero.com")));
+        CONTACT_INTENTS.put(R.id.wrap_twitter,
+                new Intent(Intent.ACTION_VIEW, Uri
+                        .parse("https://www.twitter.com/karllindmark")));
+        CONTACT_INTENTS.put(R.id.wrap_email, new Intent(Intent.ACTION_SENDTO, Uri
+                .parse("mailto:support@ninetwozero.com")));
+
+        CONTACT_INTENTS.put(R.id.wrap_forum,
+                new Intent(Intent.ACTION_VIEW, Uri
+                        .parse("http://www.ninetwozero.com/forum")));
+        CONTACT_INTENTS.put(R.id.wrap_xbox,
+                new Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("http://live.xbox.com/en-US/Profile?gamertag=NINETWOZERO")));
+        CONTACT_INTENTS
+                .put(R.id.wrap_paypal,
+                        new Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y8GLB993JKTCL")));
+
+        // CONTRIBUTORS
+        APP_CONTRIBUTORS.add(new AppContributorData(R.string.info_credits_code));
+        APP_CONTRIBUTORS
+                .add(new AppContributorData("Lukas Larson", "mailto:lukaslarson@gmail.com"));
+        APP_CONTRIBUTORS.add(new AppContributorData("Martin Nuc", "http://www.nuc.cz/"));
+        APP_CONTRIBUTORS.add(new AppContributorData("Peter Miklo\u0161sko",
+                "https://github.com/peter-budo"));
+        APP_CONTRIBUTORS.add(new AppContributorData(R.string.info_credits_graphics));
+        APP_CONTRIBUTORS.add(new AppContributorData("Marcus Januszewski", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("Stephen 'Dbagjones' Beaudet",
+                "http://djonesradio.com"));
+        APP_CONTRIBUTORS.add(new AppContributorData(R.string.info_credits_translations));
+        APP_CONTRIBUTORS.add(new AppContributorData("Alexander Katsero", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("Angelo Zangarini", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("Arnaud Ligny", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("artsiputsi", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("bagione", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("basr", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("capalex", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("Coval Delanight", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("Cuprax", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("cyrq", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("DarkoKukovec", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("federico", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("fysme", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("Judit Tur", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("Klaus Thenmayer", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("Mirella Lindmark", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("MMario1989", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("neurokirurgi", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("pauldegroot", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("pingus", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("Ricket008", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("sangr1aman", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("waldzias", ""));
+        APP_CONTRIBUTORS.add(new AppContributorData("zAo82", "mailto:sbkg0002@gmail.com"));
+        APP_CONTRIBUTORS.add(new AppContributorData("zauriel", ""));
 
         // DIFFICULTIES
         DIFFICULTY_MAP.put("ID_RP_DIFFICULTY_MEDIUM", "Normal");
@@ -1471,4 +1548,16 @@ public class DataBank {
         }
 
     }
+
+    public static List<AppContributorData> getContributors() {
+
+        return APP_CONTRIBUTORS;
+    }
+    
+    public static Map<Integer, Intent> getContactIntents() {
+        
+        return CONTACT_INTENTS;
+        
+    }
+
 }

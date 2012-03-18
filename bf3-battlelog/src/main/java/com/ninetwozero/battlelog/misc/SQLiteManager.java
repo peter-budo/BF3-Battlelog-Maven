@@ -10,13 +10,13 @@ import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
 import com.ninetwozero.battlelog.datatypes.DatabaseInformationException;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class SQLiteManager {
 
     class OpenHelper extends SQLiteOpenHelper {
 
-        OpenHelper(Context context) {
+        public OpenHelper(Context context) {
 
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
@@ -253,7 +253,7 @@ public class SQLiteManager {
         // How many values did we actually get?
         if (values == null || values.length == 0) {
 
-            throw new DatabaseInformationException("No values recieved.");
+            throw new DatabaseInformationException("No values received.");
 
         } else if (values.length == 1) {
 
@@ -289,7 +289,7 @@ public class SQLiteManager {
 
     }
 
-    public long insert(String table, String[] fields, ArrayList<String[]> values)
+    public long insert(String table, String[] fields, List<String[]> values)
             throws DatabaseInformationException {
 
         // Let's validate the table

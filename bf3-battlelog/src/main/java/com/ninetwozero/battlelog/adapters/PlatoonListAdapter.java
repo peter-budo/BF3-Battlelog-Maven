@@ -26,19 +26,19 @@ import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.PlatoonData;
 import com.ninetwozero.battlelog.misc.PublicUtils;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class PlatoonListAdapter extends BaseAdapter {
 
     // Attributes
     private Context context;
-    private ArrayList<PlatoonData> platoonArray;
+    private List<PlatoonData> platoonArray;
     private LayoutInflater layoutInflater;
     private String tempStatus;
     private TextView textPersona, textStatus;
 
     // Construct
-    public PlatoonListAdapter(Context c, ArrayList<PlatoonData> p,
+    public PlatoonListAdapter(Context c, List<PlatoonData> p,
             LayoutInflater l) {
 
         context = c;

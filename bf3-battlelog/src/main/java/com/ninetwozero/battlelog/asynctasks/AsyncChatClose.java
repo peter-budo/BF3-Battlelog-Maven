@@ -16,7 +16,7 @@ package com.ninetwozero.battlelog.asynctasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import com.ninetwozero.battlelog.services.ChatService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncChatClose extends AsyncTask<Void, Integer, Boolean> {
 
@@ -43,7 +43,7 @@ public class AsyncChatClose extends AsyncTask<Void, Integer, Boolean> {
         try {
 
             // Did we manage?
-            if (ChatService.closeChatWindow(chatId)) {
+            if (WebsiteHandler.closeChatWindow(chatId)) {
                 return true;
             } else {
                 return false;

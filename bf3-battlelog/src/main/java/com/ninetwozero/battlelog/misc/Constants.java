@@ -122,6 +122,8 @@ public final class Constants {
             + "overviewPopulateStats/{PID}/None/{PLATFORM_ID}/";
     public static final String URL_STATS_WEAPONS = URL_MAIN
             + "weaponsPopulateStats/{PID}/{PLATFORM_ID}/";
+    public static final String URL_STATS_WEAPONS_INFO = URL_MAIN
+            + "statsitemPopulateStats/iteminfo/{PNAME}/{PID}/{SLUG}/{PLATFORM_ID}/";
     public static final String URL_STATS_VEHICLES = URL_MAIN
             + "vehiclesPopulateStats/{PID}/{PLATFORM_ID}/";
     public static final String URL_STATS_AWARDS = URL_MAIN
@@ -154,6 +156,9 @@ public final class Constants {
     public static final String URL_FORUM_REPORT = URL_MAIN
             + "viewcontent/reportForumAbuse/{POST_ID}/";
 
+    //News
+    public static final String URL_NEWS = URL_MAIN + "news/{COUNT}/";
+    
     // Fields needed for the posts fields
     public static final String[] FIELD_NAMES_LOGIN = new String[] {
             "email",
@@ -373,6 +378,7 @@ public final class Constants {
     public static final String SP_BL_INTERVAL_CHAT = "battlelog_chat_interval";
     public static final String SP_BL_NUM_FEED = "battlelog_feed_count";
     public static final String SP_BL_LANG = "app_locale";
+    public static final String SP_BL_FULLSCREEN = "fullscreen_mode";
     public static final String SP_BL_LOCALE = "battlelog_locale";
     public static final String SP_BL_COOKIE_NAME = "battlelog_cookie_name";
     public static final String SP_BL_COOKIE_VALUE = "battlelog_cookie_value";

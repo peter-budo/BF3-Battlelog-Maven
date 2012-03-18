@@ -32,18 +32,13 @@ import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
 import com.ninetwozero.battlelog.adapters.ThreadPostListAdapter;
 import com.ninetwozero.battlelog.asynctasks.AsyncPostInThread;
-import com.ninetwozero.battlelog.asynctasks.AsyncSessionSetActive;
-import com.ninetwozero.battlelog.asynctasks.AsyncSessionValidate;
 import com.ninetwozero.battlelog.datatypes.Board;
 import com.ninetwozero.battlelog.datatypes.PlatoonData;
-import com.ninetwozero.battlelog.datatypes.ShareableCookie;
 import com.ninetwozero.battlelog.misc.*;
-import com.ninetwozero.battlelog.services.ForumService;
-import com.ninetwozero.battlelog.services.UserProfileService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -78,27 +73,10 @@ public class ForumThreadView extends ListActivity {
 
         // Set sharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // Did it get passed on?
-        if (icicle != null && icicle.containsKey(Constants.SUPER_COOKIES)) {
-
-            ArrayList<ShareableCookie> shareableCookies = icicle
-                    .getParcelableArrayList(Constants.SUPER_COOKIES);
-
-            if (shareableCookies != null) {
-
-                RequestHandler.setCookies(shareableCookies);
-
-            } else {
-
-                finish();
-
-            }
-
-        }
+        PublicUtils.restoreCookies(this, icicle);
 
         // Setup the locale
-        setupLocale();
+        PublicUtils.setupLocale(this, sharedPreferences);
 
         // Set the content view
         setContentView(R.layout.forum_thread_view);
@@ -125,10 +103,10 @@ public class ForumThreadView extends ListActivity {
         super.onResume();
 
         // Setup the locale
-        setupLocale();
+        PublicUtils.setupLocale(this, sharedPreferences);
 
         // Setup the session
-        setupSession();
+        PublicUtils.setupSession(this, sharedPreferences);
 
         // We need to reload
         reload();
@@ -287,7 +265,7 @@ public class ForumThreadView extends ListActivity {
 
             try {
 
-                currentThread = ForumService.getPostsForThread(locale,
+                currentThread = WebsiteHandler.getPostsForThread(locale,
                         arg0[0]);
                 return (currentThread != null);
 
@@ -624,7 +602,7 @@ public class ForumThreadView extends ListActivity {
         private Context context;
         private long threadId;
         private int page;
-        private ArrayList<Board.PostData> posts;
+        private List<Board.PostData> posts;
 
         // Constructs
         public AsyncLoadPage(Context c, long t) {
@@ -654,7 +632,7 @@ public class ForumThreadView extends ListActivity {
             try {
 
                 page = arg0[0];
-                posts = ForumService.getPostsForThread(this.threadId, page,
+                posts = WebsiteHandler.getPostsForThread(this.threadId, page,
                         locale);
                 return true;
 
@@ -706,7 +684,7 @@ public class ForumThreadView extends ListActivity {
     }
 
     public Dialog generateDialogLinkList(final Context context,
-            final ArrayList<String> links) {
+            final List<String> links) {
 
         // Attributes
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -881,8 +859,9 @@ public class ForumThreadView extends ListActivity {
                         intent = new Intent(context, ProfileView.class)
                                 .putExtra(
 
-                                        "profile", UserProfileService.getProfileIdFromSearch(username,
-                                        arg0[1])
+                                        "profile", WebsiteHandler
+                                                .getProfileIdFromSearch(username,
+                                                        arg0[1])
 
                                 );
 
@@ -915,7 +894,8 @@ public class ForumThreadView extends ListActivity {
                                         .putExtra(
 
                                                 "profile",
-                                                UserProfileService.getProfileIdFromPersona(personaId)
+                                                WebsiteHandler
+                                                        .getProfileIdFromPersona(personaId)
 
                                         );
 
@@ -944,7 +924,7 @@ public class ForumThreadView extends ListActivity {
                                     if (index > -1) {
 
                                         intent = new Intent(context,
-                                                ForumView.class).putExtra(
+                                                Backup_ForumView.class).putExtra(
 
                                                 "forumId",
                                                 Long.parseLong(currentLink
@@ -1003,70 +983,6 @@ public class ForumThreadView extends ListActivity {
                         .show();
 
             }
-
-        }
-
-    }
-
-    public void setupSession() {
-
-        // Let's set "active" against the website
-        new AsyncSessionSetActive().execute();
-
-        // If we don't have a profile...
-        if (SessionKeeper.getProfileData() == null) {
-
-            // ...but we do indeed have a cookie...
-            if (!sharedPreferences.getString(Constants.SP_BL_COOKIE_VALUE, "")
-                    .equals("")) {
-
-                // ...we set the SessionKeeper, but also reload the cookies!
-                // Easy peasy!
-                SessionKeeper
-                        .setProfileData(SessionKeeper
-                                .generateProfileDataFromSharedPreferences(sharedPreferences));
-                RequestHandler.setCookies(
-
-                        new ShareableCookie(
-
-                                sharedPreferences.getString(Constants.SP_BL_COOKIE_NAME, ""),
-                                sharedPreferences.getString(
-                                        Constants.SP_BL_COOKIE_VALUE, ""),
-                                Constants.COOKIE_DOMAIN
-
-                        )
-
-                        );
-
-                // ...but just to be sure, we try to verify our session
-                // "behind the scenes"
-                new AsyncSessionValidate(this, sharedPreferences).execute();
-
-            } else {
-
-                // Aw man, that backfired.
-                Toast.makeText(this, R.string.info_txt_session_lost,
-                        Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, Main.class));
-                finish();
-
-            }
-
-        }
-
-    }
-
-    public void setupLocale() {
-
-        if (!sharedPreferences.getString(Constants.SP_BL_LANG, "").equals("")) {
-
-            Locale locale = new Locale(sharedPreferences.getString(
-                    Constants.SP_BL_LANG, "en"));
-            Locale.setDefault(locale);
-            Configuration config = new Configuration();
-            config.locale = locale;
-            getResources().updateConfiguration(config,
-                    getResources().getDisplayMetrics());
 
         }
 

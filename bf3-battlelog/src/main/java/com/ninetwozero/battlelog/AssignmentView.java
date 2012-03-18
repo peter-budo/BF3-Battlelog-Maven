@@ -20,7 +20,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
@@ -28,27 +27,23 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.*;
 import android.widget.*;
-import com.ninetwozero.battlelog.asynctasks.AsyncSessionSetActive;
-import com.ninetwozero.battlelog.asynctasks.AsyncSessionValidate;
 import com.ninetwozero.battlelog.datatypes.AssignmentData;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
 import com.ninetwozero.battlelog.datatypes.ShareableCookie;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
 import com.ninetwozero.battlelog.misc.*;
-import com.ninetwozero.battlelog.services.UserProfileService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.List;
 
 public class AssignmentView extends Activity {
 
     // SharedPreferences for shizzle
-    private final Context CONTEXT = this;
     private SharedPreferences sharedPreferences;
     private LayoutInflater layoutInflater;
     private ProfileData profileData;
-    private HashMap<Long, ArrayList<AssignmentData>> assignments;
+    private HashMap<Long, List<AssignmentData>> assignments;
     private long selectedPersona;
     private int selectedPosition;
 
@@ -75,7 +70,7 @@ public class AssignmentView extends Activity {
         }
 
         // Setup the locale
-        setupLocale();
+        PublicUtils.setupLocale(this, sharedPreferences);
 
         // Set the content view
         setContentView(R.layout.assignment_view);
@@ -117,17 +112,17 @@ public class AssignmentView extends Activity {
         super.onResume();
 
         // Setup the locale
-        setupLocale();
+        PublicUtils.setupLocale(this, sharedPreferences);
 
         // Setup the session
-        setupSession();
+        PublicUtils.setupSession(this, sharedPreferences);
 
         // Reload the layout
         this.reload();
 
     }
 
-    public void setupList(ArrayList<AssignmentData> data) {
+    public void setupList(List<AssignmentData> data) {
 
         // Do we have the TableLayout?
         if (tableAssignments == null) {
@@ -250,7 +245,7 @@ public class AssignmentView extends Activity {
 
             try {
 
-                assignments = UserProfileService.getAssignments(context, arg0[0]);
+                assignments = WebsiteHandler.getAssignments(context, arg0[0]);
                 return (assignments != null);
 
             } catch (WebsiteHandlerException ex) {
@@ -374,8 +369,12 @@ public class AssignmentView extends Activity {
                 .getId());
 
         // Set the actual fields too
-        ((ImageView) dialog.findViewById(R.id.image_assignment))
-                .setImageResource(assignment.getResourceId());
+        ImageView imageAssignment = ((ImageView) dialog.findViewById(R.id.image_assignment));
+        imageAssignment.setImageResource(assignment.getResourceId());
+
+        // turn off clickable in assignment dialog (image_assignment needs it in
+        // the assignment list window)
+        imageAssignment.setClickable(false);
         ((TextView) dialog.findViewById(R.id.text_title))
                 .setText(assignmentTitleData[0]);
 
@@ -418,7 +417,7 @@ public class AssignmentView extends Activity {
     }
 
     public Dialog generateDialogPersonaList(final Context context,
-            final long[] personaId, final String[] persona, final long[] ls) {
+            final long[] personaId, final String[] persona, final int[] platform) {
 
         // Attributes
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -430,7 +429,7 @@ public class AssignmentView extends Activity {
         for (int i = 0, max = personaId.length; i < max; i++) {
 
             listNames[i] = persona[i] + " "
-                    + DataBank.resolvePlatformId((int) ls[i]);
+                    + DataBank.resolvePlatformId(platform[i]);
 
         }
         builder.setSingleChoiceItems(
@@ -462,70 +461,6 @@ public class AssignmentView extends Activity {
 
         // CREATE
         return builder.create();
-
-    }
-
-    public void setupSession() {
-
-        // Let's set "active" against the website
-        new AsyncSessionSetActive().execute();
-
-        // If we don't have a profile...
-        if (SessionKeeper.getProfileData() == null) {
-
-            // ...but we do indeed have a cookie...
-            if (!sharedPreferences.getString(Constants.SP_BL_COOKIE_VALUE, "")
-                    .equals("")) {
-
-                // ...we set the SessionKeeper, but also reload the cookies!
-                // Easy peasy!
-                SessionKeeper
-                        .setProfileData(SessionKeeper
-                                .generateProfileDataFromSharedPreferences(sharedPreferences));
-                RequestHandler.setCookies(
-
-                        new ShareableCookie(
-
-                                sharedPreferences.getString(Constants.SP_BL_COOKIE_NAME, ""),
-                                sharedPreferences.getString(
-                                        Constants.SP_BL_COOKIE_VALUE, ""),
-                                Constants.COOKIE_DOMAIN
-
-                        )
-
-                        );
-
-                // ...but just to be sure, we try to verify our session
-                // "behind the scenes"
-                new AsyncSessionValidate(this, sharedPreferences).execute();
-
-            } else {
-
-                // Aw man, that backfired.
-                Toast.makeText(this, R.string.info_txt_session_lost,
-                        Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, Main.class));
-                finish();
-
-            }
-
-        }
-
-    }
-
-    public void setupLocale() {
-
-        if (!sharedPreferences.getString(Constants.SP_BL_LANG, "").equals("")) {
-
-            Locale locale = new Locale(sharedPreferences.getString(
-                    Constants.SP_BL_LANG, "en"));
-            Locale.setDefault(locale);
-            Configuration config = new Configuration();
-            config.locale = locale;
-            getResources().updateConfiguration(config,
-                    getResources().getDisplayMetrics());
-
-        }
 
     }
 

@@ -23,15 +23,15 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class FriendSpinnerAdapter extends BaseAdapter implements SpinnerAdapter {
 
     private Context context;
-    private ArrayList<ProfileData> profileArray;
+    private List<ProfileData> profileArray;
     private LayoutInflater layoutInflater;
 
-    public FriendSpinnerAdapter(Context c, ArrayList<ProfileData> p,
+    public FriendSpinnerAdapter(Context c, List<ProfileData> p,
             LayoutInflater l) {
 
         this.context = c;

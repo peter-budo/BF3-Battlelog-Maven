@@ -25,15 +25,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
-import com.ninetwozero.battlelog.Dashboard;
+import com.ninetwozero.battlelog.Backup_Dashboard;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.PostData;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
 import com.ninetwozero.battlelog.misc.Constants;
 import com.ninetwozero.battlelog.misc.SessionKeeper;
-import com.ninetwozero.battlelog.services.ChatService;
-import com.ninetwozero.battlelog.services.NotificationsService;
-import com.ninetwozero.battlelog.services.UserProfileService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 import net.sf.andhsli.hotspotlogin.SimpleCrypto;
 
 public class AsyncServiceTask extends AsyncTask<String, Integer, Integer> {
@@ -60,14 +58,14 @@ public class AsyncServiceTask extends AsyncTask<String, Integer, Integer> {
 
         try {
             // Let's try to setActive
-            if (ChatService.setActive()) {
+            if (WebsiteHandler.setActive()) {
 
                 // The user is active, so how many notifications does he have?
-                int numNotifications = NotificationsService.getNewNotificationsCount(
+                int numNotifications = WebsiteHandler.getNewNotificationsCount(
 
                         sharedPreferences.getString(Constants.SP_BL_CHECKSUM, "")
 
-                );
+                        );
                 return numNotifications;
 
             } else {
@@ -79,20 +77,20 @@ public class AsyncServiceTask extends AsyncTask<String, Integer, Integer> {
                         .getString(Constants.SP_BL_PASSWORD, ""));
 
                 // Do the login
-                ProfileData profileData = UserProfileService.doLogin(
+                ProfileData profileData = WebsiteHandler.doLogin(
 
-                        context, new PostData[]{
+                        context, new PostData[] {
 
-                        new PostData(Constants.FIELD_NAMES_LOGIN[0], email),
-                        new PostData(Constants.FIELD_NAMES_LOGIN[1], password),
-                        new PostData(Constants.FIELD_NAMES_LOGIN[2],
-                                Constants.FIELD_VALUES_LOGIN[2]),
-                        new PostData(Constants.FIELD_NAMES_LOGIN[3],
-                                Constants.FIELD_VALUES_LOGIN[3]),
+                                new PostData(Constants.FIELD_NAMES_LOGIN[0], email),
+                                new PostData(Constants.FIELD_NAMES_LOGIN[1], password),
+                                new PostData(Constants.FIELD_NAMES_LOGIN[2],
+                                        Constants.FIELD_VALUES_LOGIN[2]),
+                                new PostData(Constants.FIELD_NAMES_LOGIN[3],
+                                        Constants.FIELD_VALUES_LOGIN[3]),
 
-                }, true
+                        }, true
 
-                );
+                        );
 
                 // Did it work?
                 if (profileData != null) {
@@ -129,7 +127,7 @@ public class AsyncServiceTask extends AsyncTask<String, Integer, Integer> {
                 battlelogNotification.when = System.currentTimeMillis();
 
                 // Create a new intent
-                Intent notificationIntent = new Intent(context, Dashboard.class)
+                Intent notificationIntent = new Intent(context, Backup_Dashboard.class)
                         .putExtra(
 
                                 "openCOMCenter", true

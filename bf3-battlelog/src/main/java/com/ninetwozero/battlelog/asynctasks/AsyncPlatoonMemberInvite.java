@@ -19,7 +19,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 import com.ninetwozero.battlelog.R;
-import com.ninetwozero.battlelog.services.PlatoonService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncPlatoonMemberInvite extends AsyncTask<String, Void, Integer> {
 
@@ -41,7 +41,7 @@ public class AsyncPlatoonMemberInvite extends AsyncTask<String, Void, Integer> {
 
         try {
 
-            return PlatoonService.sendPlatoonInvite(userId, platoonId, arg0[0]);
+            return WebsiteHandler.sendPlatoonInvite(userId, platoonId, arg0[0]);
 
         } catch (Exception ex) {
 

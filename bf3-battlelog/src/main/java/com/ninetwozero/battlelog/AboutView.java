@@ -14,36 +14,49 @@
 
 package com.ninetwozero.battlelog;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TabHost;
-import android.widget.TabHost.TabContentFactory;
-import android.widget.TextView;
-import android.widget.Toast;
-import com.ninetwozero.battlelog.asynctasks.AsyncSessionSetActive;
-import com.ninetwozero.battlelog.asynctasks.AsyncSessionValidate;
-import com.ninetwozero.battlelog.datatypes.ShareableCookie;
+import com.ninetwozero.battlelog.asynctasks.AsyncLogout;
+import com.ninetwozero.battlelog.datatypes.DefaultFragmentActivity;
+import com.ninetwozero.battlelog.fragments.AboutCreditsFragment;
+import com.ninetwozero.battlelog.fragments.AboutFAQFragment;
+import com.ninetwozero.battlelog.fragments.AboutMainFragment;
 import com.ninetwozero.battlelog.misc.Constants;
+import com.ninetwozero.battlelog.misc.PublicUtils;
 import com.ninetwozero.battlelog.misc.RequestHandler;
-import com.ninetwozero.battlelog.misc.SessionKeeper;
+import net.peterkuterna.android.apps.swipeytabs.SwipeyTabs;
+import net.peterkuterna.android.apps.swipeytabs.SwipeyTabsPagerAdapter;
 
-import java.util.ArrayList;
-import java.util.Locale;
+import java.util.List;
+import java.util.Vector;
 
-public class AboutView extends Activity {
+public class AboutView extends FragmentActivity implements DefaultFragmentActivity {
 
-    // Fields
-    private TabHost cTabHost;
-    private LayoutInflater layoutInflater;
+    // Attributes
+    final private Context context = this;
     private SharedPreferences sharedPreferences;
+    private LayoutInflater layoutInflater;
+
+    // Fragment related
+    private SwipeyTabs tabs;
+    private SwipeyTabsPagerAdapter pagerAdapter;
+    private List<Fragment> listFragments;
+    private FragmentManager fragmentManager;
+    private AboutMainFragment fragmentAbout;
+    private AboutFAQFragment fragmentFAQ;
+    private AboutCreditsFragment fragmentCredits;
+    private ViewPager viewPager;
+
+    // Async
+    private AsyncLogout asyncLogout;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -54,152 +67,48 @@ public class AboutView extends Activity {
         // Set sharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
+        // Should we display a title bar?
+        PublicUtils.setupFullscreen(this, sharedPreferences);
+        PublicUtils.restoreCookies(this, icicle);
+
         // Setup the locale
-        setupLocale();
+        PublicUtils.setupLocale(this, sharedPreferences);
 
         // Set the content view
-        setContentView(R.layout.about_view);
+        setContentView(R.layout.viewpager_default);
 
-        if (icicle != null && icicle.containsKey(Constants.SUPER_COOKIES)) {
-
-            ArrayList<ShareableCookie> shareableCookies = icicle
-                    .getParcelableArrayList(Constants.SUPER_COOKIES);
-            RequestHandler.setCookies(shareableCookies);
-
-        }
-
-        // Set 'em up
+        // Get the layoutInflater
         layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        fragmentManager = getSupportFragmentManager();
 
-        // Tab
-        cTabHost = (TabHost) findViewById(R.id.com_tabhost);
-        cTabHost.setup();
+        // Setup the fragments
+        setupFragments();
 
-        setupTabsSecondary(
+        // Setup COM & feed
+        initActivity();
+    }
 
-                new String[] {
-                        getString(R.string.label_about),
-                        getString(R.string.label_faq),
-                        getString(R.string.label_credits)
-                }, new int[] {
-                        R.layout.tab_content_main_about, R.layout.tab_content_main_faq,
-                        R.layout.tab_content_main_credits
-                }
-
-        );
+    public final void initActivity() {
 
     }
 
-    private void setupTabsSecondary(final String[] titleArray,
-            final int[] layoutArray) {
+    @Override
+    public void onResume() {
 
-        // Init
-        TabHost.TabSpec spec;
+        super.onResume();
 
-        // Iterate them tabs
-        for (int i = 0, max = titleArray.length; i < max; i++) {
+        // Setup the locale
+        PublicUtils.setupLocale(this, sharedPreferences);
 
-            // Num
-            final int num = i;
-            View tabview = createTabView(cTabHost.getContext(), titleArray[num]);
-
-            // Let's set the content
-            spec = cTabHost.newTabSpec(titleArray[num]).setIndicator(tabview)
-                    .setContent(
-
-                            new TabContentFactory() {
-
-                                public View createTabContent(String tag) {
-
-                                    return layoutInflater.inflate(layoutArray[num],
-                                            null);
-
-                                }
-
-                            }
-
-                    );
-
-            // Add the tab
-            cTabHost.addTab(
-
-                    spec
-
-                    );
-
-        }
+        // Setup the session
+        PublicUtils.setupSession(this, sharedPreferences);
 
     }
 
-    public void onContactClick(View v) {
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
 
-        if (v.getId() == R.id.wrap_web) {
-
-            startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://www.ninetwozero.com")));
-
-        } else if (v.getId() == R.id.wrap_twitter) {
-
-            startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://www.ninetwozero.com")));
-
-        } else if (v.getId() == R.id.wrap_email) {
-
-            startActivity(
-
-            Intent.createChooser(
-
-                    new Intent(Intent.ACTION_SENDTO).setData(
-
-                            Uri.parse(
-
-                                    "mailto:support@ninetwozero.com"
-
-                                    )
-
-                            ), getString(R.string.info_txt_email_send)
-
-                    )
-
-            );
-
-        } else if (v.getId() == R.id.wrap_forum) {
-
-            startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://www.ninetwozero.com/forum")));
-
-        } else if (v.getId() == R.id.wrap_xbox) {
-
-            startActivity(new Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse("http://live.xbox.com/en-US/Profile?gamertag=NINETWOZERO")));
-
-        } else if (v.getId() == R.id.wrap_paypal) {
-
-            startActivity(
-
-            new Intent(
-
-                    Intent.ACTION_VIEW,
-                    Uri.parse(
-
-                            "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Y8GLB993JKTCL"
-
-                            ))
-
-            );
-
-        }
-
-    }
-
-    private final View createTabView(final Context context, final String text) {
-
-        View view = LayoutInflater.from(context).inflate(
-                R.layout.profile_tab_layout, null);
-        TextView tv = (TextView) view.findViewById(R.id.tabsText);
-        tv.setText(text);
-        return view;
+        super.onConfigurationChanged(newConfig);
 
     }
 
@@ -212,84 +121,48 @@ public class AboutView extends Activity {
 
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
+    public void setupFragments() {
 
-    @Override
-    public void onResume() {
+        // Do we need to setup the fragments?
+        if (listFragments == null) {
 
-        super.onResume();
+            // Add them to the list
+            listFragments = new Vector<Fragment>();
+            listFragments.add(fragmentAbout = (AboutMainFragment) Fragment.instantiate(this,
+                    AboutMainFragment.class.getName()));
+            listFragments.add(fragmentFAQ = (AboutFAQFragment) Fragment.instantiate(this,
+                    AboutFAQFragment.class.getName()));
+            listFragments.add(fragmentCredits = (AboutCreditsFragment) Fragment.instantiate(this,
+                    AboutCreditsFragment.class.getName()));
 
-        // Setup the locale
-        setupLocale();
+            // Get the ViewPager
+            viewPager = (ViewPager) findViewById(R.id.viewpager);
+            tabs = (SwipeyTabs) findViewById(R.id.swipeytabs);
 
-        // Setup the session
-        setupSession();
-    }
+            // Fill the PagerAdapter & set it to the viewpager
+            pagerAdapter = new SwipeyTabsPagerAdapter(
 
-    public void setupSession() {
+                    fragmentManager,
+                    new String[] {
+                            "About", "FAQ", "Credits"
+                    },
+                    listFragments,
+                    viewPager,
+                    layoutInflater
+                    );
+            viewPager.setAdapter(pagerAdapter);
+            tabs.setAdapter(pagerAdapter);
 
-        // Let's set "active" against the website
-        new AsyncSessionSetActive().execute();
-
-        // If we don't have a profile...
-        if (SessionKeeper.getProfileData() == null) {
-
-            // ...but we do indeed have a cookie...
-            if (!sharedPreferences.getString(Constants.SP_BL_COOKIE_VALUE, "")
-                    .equals("")) {
-
-                // ...we set the SessionKeeper, but also reload the cookies!
-                // Easy peasy!
-                SessionKeeper
-                        .setProfileData(SessionKeeper
-                                .generateProfileDataFromSharedPreferences(sharedPreferences));
-                RequestHandler.setCookies(
-
-                        new ShareableCookie(
-
-                                sharedPreferences.getString(Constants.SP_BL_COOKIE_NAME, ""),
-                                sharedPreferences.getString(
-                                        Constants.SP_BL_COOKIE_VALUE, ""),
-                                Constants.COOKIE_DOMAIN
-
-                        )
-
-                        );
-
-                // ...but just to be sure, we try to verify our session
-                // "behind the scenes"
-                new AsyncSessionValidate(this, sharedPreferences).execute();
-
-            } else {
-
-                // Aw man, that backfired.
-                Toast.makeText(this, R.string.info_txt_session_lost,
-                        Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, Main.class));
-                finish();
-
-            }
+            // Make sure the tabs follow
+            viewPager.setOnPageChangeListener(tabs);
+            viewPager.setCurrentItem(0);
 
         }
 
     }
 
-    public void setupLocale() {
-
-        if (!sharedPreferences.getString(Constants.SP_BL_LANG, "").equals("")) {
-
-            Locale locale = new Locale(sharedPreferences.getString(
-                    Constants.SP_BL_LANG, "en"));
-            Locale.setDefault(locale);
-            Configuration config = new Configuration();
-            config.locale = locale;
-            getResources().updateConfiguration(config,
-                    getResources().getDisplayMetrics());
-
-        }
-
+    @Override
+    public void reload() {
     }
+
 }

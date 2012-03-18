@@ -12,7 +12,7 @@ import com.ninetwozero.battlelog.CompareView;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
 import com.ninetwozero.battlelog.misc.Constants;
-import com.ninetwozero.battlelog.services.UserProfileService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncFetchDataToCompare extends AsyncTask<String, Void, Boolean> {
 
@@ -53,12 +53,12 @@ public class AsyncFetchDataToCompare extends AsyncTask<String, Void, Boolean> {
         try {
 
             // Post the world!
-            playerTwo = UserProfileService.getProfileIdFromSearch(
+            playerTwo = WebsiteHandler.getProfileIdFromSearch(
 
                     searchString,
                     sharedPreferences.getString(Constants.SP_BL_CHECKSUM, "")
 
-            );
+                    );
 
             // Did we get an actual user?
             if (playerTwo == null || playerTwo.getPersonaId() == 0) {

@@ -19,7 +19,7 @@ import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.ninetwozero.battlelog.*;
-import com.ninetwozero.battlelog.services.UserProfileService;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class FeedItem implements Parcelable {
 
@@ -268,7 +268,8 @@ public class FeedItem implements Parcelable {
 
                 return new Intent(c, AssignmentView.class).putExtra(
 
-                        "profile", UserProfileService.getPersonaIdFromProfile(profileData[0].getProfileId())
+                        "profile", WebsiteHandler
+                                .getPersonaIdFromProfile(profileData[0].getProfileId())
 
                         );
 
@@ -282,7 +283,7 @@ public class FeedItem implements Parcelable {
         } else if (type.equals("createdforumthread")
                 || type.equals("wroteforumpost")) {
 
-            return new Intent(c, ForumThreadView.class).putExtra(
+            return new Intent(c, Backup_ForumThreadView.class).putExtra(
 
                     "threadId", this.itemId
 
