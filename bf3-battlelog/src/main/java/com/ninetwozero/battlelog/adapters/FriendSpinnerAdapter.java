@@ -14,6 +14,8 @@
 
 package com.ninetwozero.battlelog.adapters;
 
+import java.util.List;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,9 +23,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-import com.ninetwozero.battlelog.datatypes.ProfileData;
 
-import java.util.List;
+import com.ninetwozero.battlelog.datatypes.ProfileData;
 
 public class FriendSpinnerAdapter extends BaseAdapter implements SpinnerAdapter {
 
@@ -62,7 +63,7 @@ public class FriendSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
     @Override
     public long getItemId(int position) {
 
-        return profileArray.get(position).getProfileId();
+        return profileArray.get(position).getId();
 
     }
 
@@ -83,7 +84,7 @@ public class FriendSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
 
         // Set the TextView
         ((TextView) convertView.findViewById(android.R.id.text1))
-                .setText(currentItem.getAccountName());
+                .setText(currentItem.getUsername());
 
         // Return the view
         return convertView;

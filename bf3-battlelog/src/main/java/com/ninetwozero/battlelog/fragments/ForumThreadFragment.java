@@ -14,6 +14,12 @@
 
 package com.ninetwozero.battlelog.fragments;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -26,15 +32,37 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
-import android.view.*;
+import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.SlidingDrawer;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
-import com.ninetwozero.battlelog.*;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.ninetwozero.battlelog.Backup_ForumThreadView;
+import com.ninetwozero.battlelog.Backup_ForumView;
+import com.ninetwozero.battlelog.ForumActivity;
+import com.ninetwozero.battlelog.ForumReportActivity;
+import com.ninetwozero.battlelog.ForumSearchActivity;
+import com.ninetwozero.battlelog.PlatoonActivity;
+import com.ninetwozero.battlelog.ProfileActivity;
+import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.adapters.ThreadPostListAdapter;
 import com.ninetwozero.battlelog.asynctasks.AsyncPostInThread;
 import com.ninetwozero.battlelog.datatypes.Board;
@@ -43,12 +71,6 @@ import com.ninetwozero.battlelog.datatypes.PlatoonData;
 import com.ninetwozero.battlelog.misc.BBCodeUtils;
 import com.ninetwozero.battlelog.misc.Constants;
 import com.ninetwozero.battlelog.misc.WebsiteHandler;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ForumThreadFragment extends ListFragment implements DefaultFragment {
 
@@ -318,7 +340,7 @@ public class ForumThreadFragment extends ListFragment implements DefaultFragment
                 switch (item.getItemId()) {
 
                     case 0:
-                        startActivity(new Intent(context, ProfileView.class).putExtra(
+                        startActivity(new Intent(context, ProfileActivity.class).putExtra(
                                 "profile", data.getProfileData()));
                         break;
 
@@ -337,7 +359,7 @@ public class ForumThreadFragment extends ListFragment implements DefaultFragment
                                                 ).replace(
 
                                                         "{username}",
-                                                        data.getProfileData().getAccountName()
+                                                        data.getProfileData().getUsername()
 
                                                 )
 
@@ -355,7 +377,7 @@ public class ForumThreadFragment extends ListFragment implements DefaultFragment
                         break;
 
                     case 3:
-                        startActivity(new Intent(context, ForumReportView.class)
+                        startActivity(new Intent(context, ForumReportActivity.class)
                                 .putExtra("postId", data.getPostId()));
                         break;
 
@@ -388,7 +410,7 @@ public class ForumThreadFragment extends ListFragment implements DefaultFragment
         }
 
         // Init
-        ArrayList<String> links = new ArrayList<String>();
+        List<String> links = new ArrayList<String>();
         boolean linkFound = false;
 
         // Let's try to find 'em
@@ -496,7 +518,7 @@ public class ForumThreadFragment extends ListFragment implements DefaultFragment
 
         } else if (keyCode == KeyEvent.KEYCODE_SEARCH) {
 
-            startActivity(new Intent(context, ForumSearchView.class));
+            startActivity(new Intent(context, ForumSearchActivity.class));
             return true;
 
         }
@@ -550,7 +572,7 @@ public class ForumThreadFragment extends ListFragment implements DefaultFragment
         @Override
         protected void onPreExecute() {
 
-            if (context instanceof ForumView) {
+            if (context instanceof ForumActivity) {
 
                 buttonJump.setText(getString(R.string.label_downloading));
                 buttonJump.setEnabled(false);
@@ -583,7 +605,7 @@ public class ForumThreadFragment extends ListFragment implements DefaultFragment
         @Override
         protected void onPostExecute(Boolean results) {
 
-            if (context instanceof ForumView) {
+            if (context instanceof ForumActivity) {
 
                 if (results) {
 
@@ -788,7 +810,7 @@ public class ForumThreadFragment extends ListFragment implements DefaultFragment
 
                         String username = currentLink.substring(index + 6,
                                 linkEndPos);
-                        intent = new Intent(context, ProfileView.class)
+                        intent = new Intent(context, ProfileActivity.class)
                                 .putExtra(
 
                                         "profile", WebsiteHandler
@@ -804,7 +826,7 @@ public class ForumThreadFragment extends ListFragment implements DefaultFragment
 
                             long platoonId = Long.parseLong(currentLink
                                     .substring(index + 9, linkEndPos));
-                            intent = new Intent(context, PlatoonView.class)
+                            intent = new Intent(context, PlatoonActivity.class)
                                     .putExtra(
 
                                             "platoon", new PlatoonData(platoonId, 0, 0,
@@ -822,7 +844,7 @@ public class ForumThreadFragment extends ListFragment implements DefaultFragment
                                 long personaId = Long
                                         .parseLong(currentLink.substring(0,
                                                 currentLink.indexOf('/')));
-                                intent = new Intent(context, ProfileView.class)
+                                intent = new Intent(context, ProfileActivity.class)
                                         .putExtra(
 
                                                 "profile",

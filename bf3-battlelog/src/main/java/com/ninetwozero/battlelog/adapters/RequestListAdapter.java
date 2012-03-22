@@ -14,6 +14,8 @@
 
 package com.ninetwozero.battlelog.adapters;
 
+import java.util.List;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +23,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
-
-import java.util.List;
 
 public class RequestListAdapter extends BaseAdapter {
 
@@ -60,13 +61,7 @@ public class RequestListAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
 
-        return this.profileArray.get(position).getProfileId();
-
-    }
-
-    public long getPersonaId(int position) {
-
-        return this.profileArray.get(position).getPersonaId();
+        return this.profileArray.get(position).getId();
 
     }
 
@@ -86,7 +81,7 @@ public class RequestListAdapter extends BaseAdapter {
 
         // Set the TextView
         ((TextView) convertView.findViewById(R.id.text_user))
-                .setText(currentProfile.getAccountName());
+                .setText(currentProfile.getUsername());
 
         // Hot-wire the views
         ((ImageView) convertView.findViewById(R.id.button_accept))

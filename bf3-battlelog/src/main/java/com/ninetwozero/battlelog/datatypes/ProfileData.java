@@ -20,167 +20,131 @@ import android.os.Parcelable;
 public class ProfileData implements Parcelable {
 
     // Attributes
+    protected long id;
     protected String username, gravatarHash;
-    protected String[] personaName;
-    protected long profileId;
-    protected long[] personaId;
-    protected int[] platformId;
+    protected PersonaData[] persona;
     protected boolean isPlaying, isOnline;
 
     // Constructs
     public ProfileData(Parcel in) {
-        readFromParcel(in);
-    }
 
-    public ProfileData(String un, long pf) {
-
-        this.username = un;
-        this.profileId = pf;
-
-    }
-
-    public ProfileData(String un, String[] pn, long[] p, long pf, int[] n,
-            String im) {
-
-        this.username = un;
-        this.personaName = pn;
-        this.personaId = p;
-        this.profileId = pf;
-        this.platformId = n;
-        this.gravatarHash = im;
-
-        this.isOnline = false;
-        this.isPlaying = false;
+        id = in.readLong();
+        username = in.readString();
+        gravatarHash = in.readString();
+        isOnline = (in.readInt() == 1);
+        isPlaying = (in.readInt() == 1);
+        persona = in.createTypedArray(PersonaData.CREATOR);
 
     }
 
-    public ProfileData(String an, String pn, long p, long pf, int n, String im) {
+    public ProfileData(long pf, String un) {
 
-        this(an, new String[] {
-                pn
-        }, new long[] {
+        id = pf;
+        username = un;
+
+    }
+
+    public ProfileData(long pf, String un, PersonaData p, String im) {
+
+        id = pf;
+        username = un;
+        persona = new PersonaData[] {
                 p
-        }, pf, new int[] {
-                n
-        },
-                im);
+        };
+        gravatarHash = im;
+
+        isOnline = false;
+        isPlaying = false;
 
     }
 
-    public ProfileData(String an, String pn, long p, long pf, int n,
-            String im, boolean b, boolean c) {
+    public ProfileData(long pf, String un, PersonaData[] p, String im) {
 
-        this(an, new String[] {
-                pn
-        }, new long[] {
+        id = pf;
+        username = un;
+        persona = p;
+        gravatarHash = im;
+
+        isOnline = false;
+        isPlaying = false;
+
+    }
+
+    public ProfileData(long pf, String un, PersonaData p, String im, boolean on, boolean pl) {
+
+        this(pf, un, new PersonaData[] {
                 p
-        }, pf, new int[] {
-                n
-        },
-                im, b, c);
+        }, im);
+        isOnline = on;
+        isPlaying = pl;
 
     }
 
-    public ProfileData(String an, String[] pn, long[] p, long pf, int[] n,
-            String im, boolean io, boolean ip) {
+    public ProfileData(long pf, String un, PersonaData[] p, String im, boolean on, boolean pl) {
 
-        this(an, pn, p, pf, n, im);
-        this.isOnline = io;
-        this.isPlaying = ip;
+        this(pf, un, p, im);
+        isOnline = on;
+        isPlaying = pl;
 
     }
 
     // Getters
-    public String getAccountName() {
-        return this.username;
+    public long getId() {
+        return id;
     }
 
-    public String getPersonaName() {
-        return (personaName.length > 0) ? this.personaName[0] : null;
+    public String getUsername() {
+        return username;
     }
 
-    public String getPersonaName(int pos) {
-        return ((personaName.length - 1) >= pos) ? this.personaName[pos] : null;
+    public PersonaData getPersona(int p) {
+
+        return (persona.length != 0) ? persona[p] : null;
+
     }
 
-    public String[] getPersonaNameArray() {
-        return this.personaName;
+    public PersonaData[] getPersonaArray() {
+
+        return persona;
+
     }
 
     public int getNumPersonas() {
-        return this.personaId.length;
-    }
 
-    public long[] getPersonaIdArray() {
-        return this.personaId;
-    }
+        return persona.length;
 
-    public int[] getPlatformIdArray() {
-        return this.platformId;
-    }
-
-    public long getPersonaId() {
-        return (personaId.length > 0) ? this.personaId[0] : 0;
-    }
-
-    public long getPersonaId(int pos) {
-        return ((personaId.length - 1) >= pos) ? personaId[pos] : 0;
-    }
-
-    public long getProfileId() {
-        return this.profileId;
-    }
-
-    public int getPlatformId() {
-        return (platformId.length > 0) ? platformId[0] : 0;
-    }
-
-    public int getPlatformId(int pos) {
-        return ((platformId.length - 1) >= pos) ? platformId[pos] : 0;
     }
 
     public String getGravatarHash() {
-        return this.gravatarHash;
+        return gravatarHash;
     }
 
     // is ... ?
     public boolean isOnline() {
-        return this.isOnline;
+        return isOnline;
     }
 
     public boolean isPlaying() {
-        return this.isPlaying;
+        return isPlaying;
+    }
+
+    // Setters
+    public void setPersona(PersonaData[] p) {
+
+        persona = p;
+
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
 
-        // Special cases
-        dest.writeStringArray(this.personaName);
-        dest.writeLongArray(this.personaId);
-        dest.writeIntArray(this.platformId);
-
         // Everything else
-        dest.writeString(this.username);
-        dest.writeLong(this.profileId);
-        dest.writeString(this.gravatarHash);
-        dest.writeInt(this.isOnline ? 1 : 0);
-        dest.writeInt(this.isPlaying ? 1 : 0);
-    }
-
-    private void readFromParcel(Parcel in) {
-
-        // Let's retrieve them, same order as above
-        this.personaName = in.createStringArray();
-        this.personaId = in.createLongArray();
-        this.platformId = in.createIntArray();
-
-        this.username = in.readString();
-        this.profileId = in.readInt();
-        this.gravatarHash = in.readString();
-        this.isOnline = (in.readInt() == 1);
-        this.isPlaying = (in.readInt() == 1);
-
+        dest.writeLong(id);
+        dest.writeString(username);
+        dest.writeString(gravatarHash);
+        dest.writeInt(isOnline ? 1 : 0);
+        dest.writeInt(isPlaying ? 1 : 0);
+        dest.writeTypedArray(persona, flags);
     }
 
     @Override
@@ -200,28 +164,13 @@ public class ProfileData implements Parcelable {
 
     };
 
-    // Setters
-    public void setPersonaId(long[] array) {
-        this.personaId = array;
-    }
-
-    public void setPlatformId(int[] array) {
-        this.platformId = array;
-    }
-
-    public void setPersonaName(String[] array) {
-        this.personaName = array;
-    }
-
     // toString
     @Override
     public String toString() {
 
         return (
 
-        getAccountName() + ":" + getPersonaName() + ":" + getPersonaId() + ":"
-                + getProfileId() + ":" + getPlatformId() + ":" + isOnline()
-                + ":" + isPlaying()
+        id + ":" + username + ":pX" + persona.length
 
         );
     }

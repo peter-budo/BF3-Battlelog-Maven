@@ -14,6 +14,9 @@
 
 package com.ninetwozero.battlelog.fragments;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -25,11 +28,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.ninetwozero.battlelog.ForumView;
+
+import com.ninetwozero.battlelog.ForumActivity;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.adapters.ForumListAdapter;
 import com.ninetwozero.battlelog.datatypes.Board;
@@ -37,9 +45,6 @@ import com.ninetwozero.battlelog.datatypes.DefaultFragment;
 import com.ninetwozero.battlelog.misc.Constants;
 import com.ninetwozero.battlelog.misc.DataBank;
 import com.ninetwozero.battlelog.misc.WebsiteHandler;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BoardFragment extends ListFragment implements DefaultFragment {
 
@@ -135,7 +140,7 @@ public class BoardFragment extends ListFragment implements DefaultFragment {
     public void onListItemClick(ListView l, View v, int pos, long id) {
 
         // Always called from this one
-        ForumView parent = (ForumView) getActivity();
+        ForumActivity parent = (ForumActivity) getActivity();
 
         // Let's open the forum
         parent.openForum(

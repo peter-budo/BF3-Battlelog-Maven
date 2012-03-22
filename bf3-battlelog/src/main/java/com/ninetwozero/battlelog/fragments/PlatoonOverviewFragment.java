@@ -25,20 +25,29 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.ninetwozero.battlelog.PlatoonView;
+
+import com.ninetwozero.battlelog.PlatoonActivity;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.asynctasks.AsyncPlatoonRequest;
 import com.ninetwozero.battlelog.datatypes.DefaultFragment;
 import com.ninetwozero.battlelog.datatypes.PlatoonData;
 import com.ninetwozero.battlelog.datatypes.PlatoonInformation;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
-import com.ninetwozero.battlelog.misc.*;
+import com.ninetwozero.battlelog.misc.CacheHandler;
+import com.ninetwozero.battlelog.misc.Constants;
+import com.ninetwozero.battlelog.misc.PublicUtils;
+import com.ninetwozero.battlelog.misc.SessionKeeper;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class PlatoonOverviewFragment extends Fragment implements DefaultFragment {
 
@@ -255,7 +264,7 @@ public class PlatoonOverviewFragment extends Fragment implements DefaultFragment
 
                 // Siiiiiiiiilent refresh
                 new AsyncRefresh(context, platoonData, SessionKeeper
-                        .getProfileData().getProfileId()).execute();
+                        .getProfileData().getId()).execute();
                 if (this.progressDialog != null) {
                     this.progressDialog.dismiss();
                 }
@@ -267,7 +276,7 @@ public class PlatoonOverviewFragment extends Fragment implements DefaultFragment
             } else {
 
                 new AsyncRefresh(context, platoonData, SessionKeeper
-                        .getProfileData().getProfileId()).execute();
+                        .getProfileData().getId()).execute();
 
             }
 
@@ -376,25 +385,25 @@ public class PlatoonOverviewFragment extends Fragment implements DefaultFragment
 
         // ASYNC!!!
         new AsyncRefresh(context, platoonData, SessionKeeper
-                .getProfileData().getProfileId()).execute();
+                .getProfileData().getId()).execute();
 
     }
 
     public void sendToStats(PlatoonInformation p) {
 
-        ((PlatoonView) context).openStats(p);
+        ((PlatoonActivity) context).openStats(p);
 
     }
 
     public void sendToUsers(PlatoonInformation p) {
 
-        ((PlatoonView) context).openMembers(p);
+        ((PlatoonActivity) context).openMembers(p);
 
     }
 
     public void setFeedPermission(boolean c) {
 
-        ((PlatoonView) context).setFeedPermission(c);
+        ((PlatoonActivity) context).setFeedPermission(c);
 
     }
 
@@ -473,7 +482,7 @@ public class PlatoonOverviewFragment extends Fragment implements DefaultFragment
             new AsyncPlatoonRequest(
 
                     context, platoonData.getId(), SessionKeeper.getProfileData()
-                            .getProfileId(), sharedPreferences.getString(
+                            .getId(), sharedPreferences.getString(
                             Constants.SP_BL_CHECKSUM, "")
 
             ).execute(true);
@@ -483,7 +492,7 @@ public class PlatoonOverviewFragment extends Fragment implements DefaultFragment
             new AsyncPlatoonRequest(
 
                     context, platoonData.getId(), SessionKeeper.getProfileData()
-                            .getProfileId(), sharedPreferences.getString(
+                            .getId(), sharedPreferences.getString(
                             Constants.SP_BL_CHECKSUM, "")
 
             ).execute(false);

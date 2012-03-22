@@ -14,6 +14,9 @@
 
 package com.ninetwozero.battlelog;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -26,22 +29,52 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.*;
+import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.*;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.SlidingDrawer;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
+import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabContentFactory;
-import com.ninetwozero.battlelog.adapters.*;
-import com.ninetwozero.battlelog.asynctasks.*;
-import com.ninetwozero.battlelog.datatypes.*;
-import com.ninetwozero.battlelog.misc.*;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.ninetwozero.battlelog.adapters.DashboardPopupPlatoonListAdapter;
+import com.ninetwozero.battlelog.adapters.FeedListAdapter;
+import com.ninetwozero.battlelog.adapters.FriendListAdapter;
+import com.ninetwozero.battlelog.adapters.NotificationListAdapter;
+import com.ninetwozero.battlelog.adapters.RequestListAdapter;
+import com.ninetwozero.battlelog.asynctasks.AsyncComRefresh;
+import com.ninetwozero.battlelog.asynctasks.AsyncComRequest;
+import com.ninetwozero.battlelog.asynctasks.AsyncFeedHooah;
+import com.ninetwozero.battlelog.asynctasks.AsyncFetchDataToCompare;
+import com.ninetwozero.battlelog.asynctasks.AsyncLogout;
+import com.ninetwozero.battlelog.datatypes.FeedItem;
+import com.ninetwozero.battlelog.datatypes.FriendListDataWrapper;
+import com.ninetwozero.battlelog.datatypes.NotificationData;
+import com.ninetwozero.battlelog.datatypes.PlatoonData;
+import com.ninetwozero.battlelog.datatypes.PostData;
+import com.ninetwozero.battlelog.datatypes.ProfileData;
+import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
+import com.ninetwozero.battlelog.misc.Constants;
+import com.ninetwozero.battlelog.misc.PublicUtils;
+import com.ninetwozero.battlelog.misc.RequestHandler;
+import com.ninetwozero.battlelog.misc.SessionKeeper;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class Backup_Dashboard extends TabActivity {
 
@@ -382,7 +415,7 @@ public class Backup_Dashboard extends TabActivity {
             notificationListAdapter = new NotificationListAdapter(
 
                     this, items, layoutInflater, SessionKeeper.getProfileData()
-                            .getProfileId()
+                            .getId()
 
                     );
             listNotifications.setAdapter(notificationListAdapter);
@@ -453,8 +486,7 @@ public class Backup_Dashboard extends TabActivity {
                 postDataArray[i] = new PostData(
 
                         Constants.FIELD_NAMES_STATUS[i],
-                        (Constants.FIELD_VALUES_STATUS[i] == null) ? valueFieldsArray[i]
-                                : Constants.FIELD_VALUES_STATUS[i]
+                        valueFieldsArray[i]
 
                         );
 
@@ -498,7 +530,7 @@ public class Backup_Dashboard extends TabActivity {
 
         } else if (item.getItemId() == R.id.option_settings) {
 
-            startActivity(new Intent(this, SettingsView.class));
+            startActivity(new Intent(this, SettingsActivity.class));
             finish();
 
         } else if (item.getItemId() == R.id.option_logout) {
@@ -507,7 +539,7 @@ public class Backup_Dashboard extends TabActivity {
 
         } else if (item.getItemId() == R.id.option_about) {
 
-            startActivity(new Intent(this, AboutView.class));
+            startActivity(new Intent(this, AboutActivity.class));
 
         }
 
@@ -706,7 +738,7 @@ public class Backup_Dashboard extends TabActivity {
             // Feed refresh!
             asyncFeedRefresh = new AsyncFeedRefresh(
 
-                    context, SessionKeeper.getProfileData().getProfileId()
+                    context, SessionKeeper.getProfileData().getId()
 
                     );
             asyncFeedRefresh.execute();
@@ -724,7 +756,7 @@ public class Backup_Dashboard extends TabActivity {
 
         new AsyncComRequest(
 
-                this, ((ProfileData) v.getTag()).getProfileId(), new AsyncComRefresh(
+                this, ((ProfileData) v.getTag()).getId(), new AsyncComRefresh(
 
                         this, listFriendRequests, listFriends, layoutInflater, buttonRefresh,
                         slidingDrawerHandle
@@ -776,7 +808,7 @@ public class Backup_Dashboard extends TabActivity {
             ProfileData selectedUser = (ProfileData) info.targetView.getTag();
 
             // Wait, is the position 0? If so, it's the heading...
-            if (!selectedUser.getAccountName().startsWith("0000000")) {
+            if (!selectedUser.getUsername().startsWith("0000000")) {
 
                 menu.add(menuId, 0, 0, R.string.label_chat_open);
                 menu.add(menuId, 1, 0, R.string.label_soldier_view);
@@ -841,7 +873,7 @@ public class Backup_Dashboard extends TabActivity {
 
                     new Intent(
 
-                            this, ChatView.class
+                            this, ChatActivity.class
 
                     ).putExtra(
 
@@ -857,7 +889,7 @@ public class Backup_Dashboard extends TabActivity {
 
                     new Intent(
 
-                            this, ProfileView.class
+                            this, ProfileActivity.class
 
                     ).putExtra(
 
@@ -873,7 +905,7 @@ public class Backup_Dashboard extends TabActivity {
 
                     new Intent(
 
-                            this, UnlockView.class
+                            this, UnlockActivity.class
 
                     ).putExtra(
 
@@ -889,7 +921,7 @@ public class Backup_Dashboard extends TabActivity {
 
                     new Intent(
 
-                            this, CompareView.class
+                            this, CompareActivity.class
 
                     ).putExtra(
 
@@ -899,7 +931,7 @@ public class Backup_Dashboard extends TabActivity {
 
                                     "profile2", WebsiteHandler.getPersonaIdFromProfile(
 
-                                            ((ProfileData) info.targetView.getTag()).getProfileId()
+                                            ((ProfileData) info.targetView.getTag()).getId()
 
                                             )
 
@@ -913,13 +945,13 @@ public class Backup_Dashboard extends TabActivity {
 
                     new Intent(
 
-                            this, AssignmentView.class
+                            this, AssignmentActivity.class
 
                     ).putExtra(
 
                             "profile", WebsiteHandler.getPersonaIdFromProfile(
 
-                                    ((ProfileData) info.targetView.getTag()).getProfileId()
+                                    ((ProfileData) info.targetView.getTag()).getId()
 
                                     )
 
@@ -954,7 +986,7 @@ public class Backup_Dashboard extends TabActivity {
 
                     new Intent(
 
-                            this, SinglePostView.class
+                            this, SinglePostActivity.class
 
                     ).putExtra(
 
@@ -1148,23 +1180,23 @@ public class Backup_Dashboard extends TabActivity {
 
         if (id == R.id.button_unlocks) {
 
-            startActivity(new Intent(this, UnlockView.class).putExtra(
+            startActivity(new Intent(this, UnlockActivity.class).putExtra(
                     "profile", SessionKeeper.getProfileData()));
 
         } else if (id == R.id.button_assignments) {
 
-            startActivity(new Intent(this, AssignmentView.class).putExtra(
+            startActivity(new Intent(this, AssignmentActivity.class).putExtra(
                     "profile", SessionKeeper.getProfileData()));
 
         } else if (id == R.id.button_search) {
 
-            startActivity(new Intent(this, SearchView.class));
+            startActivity(new Intent(this, SearchActivity.class));
 
         } else if (id == R.id.button_self) {
 
             startActivity(
 
-            new Intent(this, ProfileView.class).putExtra("profile",
+            new Intent(this, ProfileActivity.class).putExtra("profile",
                     SessionKeeper.getProfileData())
 
             );
@@ -1302,7 +1334,7 @@ public class Backup_Dashboard extends TabActivity {
                 notificationArray = WebsiteHandler.getNotifications(arg0[0]);
                 friendListData = WebsiteHandler.getFriendsCOM(context, arg0[0]);
                 platoonArray = WebsiteHandler.getPlatoonsForUser(context,
-                        SessionKeeper.getProfileData().getAccountName());
+                        SessionKeeper.getProfileData().getUsername());
                 return true;
 
             } catch (WebsiteHandlerException e) {
@@ -1432,7 +1464,7 @@ public class Backup_Dashboard extends TabActivity {
                     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                             long arg3) {
 
-                        startActivity(new Intent(context, PlatoonView.class).putExtra(
+                        startActivity(new Intent(context, PlatoonActivity.class).putExtra(
                                 "platoon", ((PlatoonData) arg1.getTag())));
                         theDialog.dismiss();
 

@@ -17,7 +17,12 @@ package com.ninetwozero.battlelog.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.DefaultFragment;
 
@@ -49,10 +54,10 @@ public class AboutFAQFragment extends Fragment implements DefaultFragment {
 
     @Override
     public void initFragment(View view) {
-        
-        //Prevent bug
+
+        // Prevent bug
         setUserVisibleHint(true);
-        
+
     }
 
     @Override

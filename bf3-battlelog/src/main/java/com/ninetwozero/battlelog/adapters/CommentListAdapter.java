@@ -14,6 +14,8 @@
 
 package com.ninetwozero.battlelog.adapters;
 
+import java.util.List;
+
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.text.Html;
@@ -23,11 +25,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.CommentData;
 import com.ninetwozero.battlelog.misc.PublicUtils;
-
-import java.util.List;
 
 public class CommentListAdapter extends BaseAdapter {
 
@@ -92,7 +93,7 @@ public class CommentListAdapter extends BaseAdapter {
         imageAvatar = (ImageView) convertView.findViewById(R.id.image_avatar);
 
         // Set the TextViews
-        textUsername.setText(currentData.getAuthor().getAccountName());
+        textUsername.setText(currentData.getAuthor().getUsername());
         textMessage.setText(Html.fromHtml(currentData.getContent().replace("<",
                 "&lt;")));
         textTimestamp.setText(PublicUtils.getRelativeDate(context,

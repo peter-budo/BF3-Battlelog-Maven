@@ -14,6 +14,9 @@
 
 package com.ninetwozero.battlelog.asynctasks;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -21,16 +24,14 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.widget.ListView;
 import android.widget.Toast;
-import com.ninetwozero.battlelog.ChatView;
+
+import com.ninetwozero.battlelog.ChatActivity;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.adapters.ChatListAdapter;
 import com.ninetwozero.battlelog.datatypes.ChatMessage;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
 import com.ninetwozero.battlelog.misc.Constants;
 import com.ninetwozero.battlelog.misc.WebsiteHandler;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AsyncChatRefresh extends AsyncTask<Long, Integer, Boolean> {
 
@@ -86,8 +87,8 @@ public class AsyncChatRefresh extends AsyncTask<Long, Integer, Boolean> {
                     .setMessageArray(messageArray);
 
             // Do we need to ploop?
-            if (context instanceof ChatView) {
-                ((ChatView) context).notifyNewPost(messageArray);
+            if (context instanceof ChatActivity) {
+                ((ChatActivity) context).notifyNewPost(messageArray);
             }
 
         } else {

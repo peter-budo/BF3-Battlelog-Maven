@@ -14,17 +14,25 @@
 
 package com.ninetwozero.battlelog.fragments;
 
+import java.util.List;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
-import android.view.*;
+import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.adapters.NewsListAdapter;
 import com.ninetwozero.battlelog.datatypes.DefaultFragment;
@@ -32,8 +40,6 @@ import com.ninetwozero.battlelog.datatypes.NewsData;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
 import com.ninetwozero.battlelog.misc.SessionKeeper;
 import com.ninetwozero.battlelog.misc.WebsiteHandler;
-
-import java.util.List;
 
 public class NewsFragment extends ListFragment implements DefaultFragment {
 
@@ -44,7 +50,7 @@ public class NewsFragment extends ListFragment implements DefaultFragment {
     // Elements
     private ListView listView;
     private NewsListAdapter newsListAdapter;
-    
+
     // Misc
     private List<NewsData> newsItems;
     private SharedPreferences sharedPreferences;
@@ -103,7 +109,7 @@ public class NewsFragment extends ListFragment implements DefaultFragment {
         // Feed refresh!
         new AsyncFeedRefresh(
 
-                context, SessionKeeper.getProfileData().getProfileId()
+                context, SessionKeeper.getProfileData().getId()
 
         ).execute();
 

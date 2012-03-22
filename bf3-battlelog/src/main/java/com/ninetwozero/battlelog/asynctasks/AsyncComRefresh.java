@@ -14,6 +14,8 @@
 
 package com.ninetwozero.battlelog.asynctasks;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -25,6 +27,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.adapters.FriendListAdapter;
 import com.ninetwozero.battlelog.adapters.RequestListAdapter;
@@ -33,8 +36,6 @@ import com.ninetwozero.battlelog.datatypes.ProfileData;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
 import com.ninetwozero.battlelog.misc.Constants;
 import com.ninetwozero.battlelog.misc.WebsiteHandler;
-
-import java.util.List;
 
 public class AsyncComRefresh extends AsyncTask<Void, Integer, Boolean> {
 

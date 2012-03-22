@@ -14,7 +14,13 @@
 
 package com.ninetwozero.battlelog;
 
-import android.app.*;
+import java.util.List;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,22 +31,49 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.*;
+import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.*;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabContentFactory;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.ninetwozero.battlelog.adapters.FeedListAdapter;
 import com.ninetwozero.battlelog.adapters.PlatoonUserListAdapter;
 import com.ninetwozero.battlelog.asynctasks.AsyncFeedHooah;
 import com.ninetwozero.battlelog.asynctasks.AsyncPlatoonMemberManagement;
 import com.ninetwozero.battlelog.asynctasks.AsyncPlatoonRequest;
 import com.ninetwozero.battlelog.asynctasks.AsyncPlatoonRespond;
-import com.ninetwozero.battlelog.datatypes.*;
-import com.ninetwozero.battlelog.misc.*;
-
-import java.util.List;
+import com.ninetwozero.battlelog.datatypes.FeedItem;
+import com.ninetwozero.battlelog.datatypes.PlatoonData;
+import com.ninetwozero.battlelog.datatypes.PlatoonInformation;
+import com.ninetwozero.battlelog.datatypes.PlatoonMemberData;
+import com.ninetwozero.battlelog.datatypes.PlatoonStats;
+import com.ninetwozero.battlelog.datatypes.PlatoonStatsItem;
+import com.ninetwozero.battlelog.datatypes.PlatoonTopStatsItem;
+import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
+import com.ninetwozero.battlelog.misc.CacheHandler;
+import com.ninetwozero.battlelog.misc.Constants;
+import com.ninetwozero.battlelog.misc.PublicUtils;
+import com.ninetwozero.battlelog.misc.RequestHandler;
+import com.ninetwozero.battlelog.misc.SessionKeeper;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class Backup_PlatoonView extends TabActivity {
 
@@ -141,7 +174,7 @@ public class Backup_PlatoonView extends TabActivity {
 
         // ASYNC!!!
         new AsyncPlatoonRefresh(this, platoonData, SessionKeeper
-                .getProfileData().getProfileId()).execute();
+                .getProfileData().getId()).execute();
 
     }
 
@@ -265,7 +298,7 @@ public class Backup_PlatoonView extends TabActivity {
 
                 // Siiiiiiiiilent refresh
                 new AsyncPlatoonRefresh(CONTEXT, platoonData, SessionKeeper
-                        .getProfileData().getProfileId()).execute();
+                        .getProfileData().getId()).execute();
                 if (this.progressDialog != null) {
                     this.progressDialog.dismiss();
                 }
@@ -273,7 +306,7 @@ public class Backup_PlatoonView extends TabActivity {
             } else {
 
                 new AsyncPlatoonRefresh(CONTEXT, platoonData, SessionKeeper
-                        .getProfileData().getProfileId(), progressDialog)
+                        .getProfileData().getId(), progressDialog)
                         .execute();
 
             }
@@ -721,7 +754,7 @@ public class Backup_PlatoonView extends TabActivity {
             if (tempTopStats.getProfile() != null) {
 
                 ((TextView) cacheView.findViewById(R.id.text_name))
-                        .setText(tempTopStats.getProfile().getAccountName()
+                        .setText(tempTopStats.getProfile().getUsername()
                                 + "");
                 ((TextView) cacheView.findViewById(R.id.text_spm))
                         .setText(tempTopStats.getSPM() + "");
@@ -1028,7 +1061,7 @@ public class Backup_PlatoonView extends TabActivity {
             new AsyncPlatoonRequest(
 
                     this, platoonData.getId(), SessionKeeper.getProfileData()
-                            .getProfileId(), sharedPreferences.getString(
+                            .getId(), sharedPreferences.getString(
                             Constants.SP_BL_CHECKSUM, "")
 
             ).execute(true);
@@ -1038,7 +1071,7 @@ public class Backup_PlatoonView extends TabActivity {
             new AsyncPlatoonRequest(
 
                     this, platoonData.getId(), SessionKeeper.getProfileData()
-                            .getProfileId(), sharedPreferences.getString(
+                            .getId(), sharedPreferences.getString(
                             Constants.SP_BL_CHECKSUM, "")
 
             ).execute(false);
@@ -1049,7 +1082,7 @@ public class Backup_PlatoonView extends TabActivity {
 
             new Intent(
 
-                    this, PlatoonInviteView.class
+                    this, PlatoonInviteActivity.class
 
             ).putExtra(
 
@@ -1259,7 +1292,7 @@ public class Backup_PlatoonView extends TabActivity {
 
                     startActivity(
 
-                    new Intent(CONTEXT, ProfileView.class).putExtra(
+                    new Intent(CONTEXT, ProfileActivity.class).putExtra(
 
                             "profile", data
 
@@ -1282,14 +1315,14 @@ public class Backup_PlatoonView extends TabActivity {
                                 Toast.LENGTH_SHORT).show();
 
                     }
-                    new AsyncPlatoonMemberManagement(this, data.getProfileId(),
+                    new AsyncPlatoonMemberManagement(this, data.getId(),
                             platoonData.getId(), 1).execute(!data.isAdmin());
 
                 } else if (item.getItemId() == 2) {
 
                     Toast.makeText(this, R.string.info_platoon_member_kicking,
                             Toast.LENGTH_SHORT).show();
-                    new AsyncPlatoonMemberManagement(this, data.getProfileId(),
+                    new AsyncPlatoonMemberManagement(this, data.getId(),
                             platoonData.getId(), 2).execute();
 
                 } else if (item.getItemId() == 3) {
@@ -1298,7 +1331,7 @@ public class Backup_PlatoonView extends TabActivity {
                             Toast.LENGTH_SHORT).show();
                     new AsyncPlatoonRespond(
 
-                            this, platoonData.getId(), data.getProfileId(), true
+                            this, platoonData.getId(), data.getId(), true
 
                     ).execute(sharedPreferences.getString(
                             Constants.SP_BL_CHECKSUM, ""));
@@ -1310,7 +1343,7 @@ public class Backup_PlatoonView extends TabActivity {
                             Toast.LENGTH_SHORT).show();
                     new AsyncPlatoonRespond(
 
-                            this, platoonData.getId(), data.getProfileId(), false
+                            this, platoonData.getId(), data.getId(), false
 
                     ).execute(sharedPreferences.getString(
                             Constants.SP_BL_CHECKSUM, ""));
@@ -1346,7 +1379,7 @@ public class Backup_PlatoonView extends TabActivity {
 
                     new Intent(
 
-                            this, SinglePostView.class
+                            this, SinglePostActivity.class
 
                     ).putExtra(
 
@@ -1529,7 +1562,7 @@ public class Backup_PlatoonView extends TabActivity {
 
                 this, platoonData.getId(),
                 ((PlatoonMemberData) ((View) v.getParent()).getTag())
-                        .getProfileId(), (v.getId() == R.id.button_accept)
+                        .getId(), (v.getId() == R.id.button_accept)
 
         ).execute(sharedPreferences.getString(Constants.SP_BL_CHECKSUM, ""));
 

@@ -14,6 +14,8 @@
 
 package com.ninetwozero.battlelog.fragments;
 
+import java.util.List;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,13 +23,25 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
-import android.view.*;
+import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.*;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.ninetwozero.battlelog.R;
-import com.ninetwozero.battlelog.SinglePostView;
+import com.ninetwozero.battlelog.SinglePostActivity;
 import com.ninetwozero.battlelog.adapters.FeedListAdapter;
 import com.ninetwozero.battlelog.asynctasks.AsyncFeedHooah;
 import com.ninetwozero.battlelog.asynctasks.AsyncPostToWall;
@@ -38,8 +52,6 @@ import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
 import com.ninetwozero.battlelog.misc.Constants;
 import com.ninetwozero.battlelog.misc.SessionKeeper;
 import com.ninetwozero.battlelog.misc.WebsiteHandler;
-
-import java.util.List;
 
 public class FeedFragment extends ListFragment implements DefaultFragment {
 
@@ -206,7 +218,7 @@ public class FeedFragment extends ListFragment implements DefaultFragment {
         // Feed refresh!
         new AsyncFeedRefresh(
 
-                context, SessionKeeper.getProfileData().getProfileId()
+                context, SessionKeeper.getProfileData().getId()
 
         ).execute();
 
@@ -265,7 +277,7 @@ public class FeedFragment extends ListFragment implements DefaultFragment {
 
                 new Intent(
 
-                        context, SinglePostView.class
+                        context, SinglePostActivity.class
 
                 ).putExtra(
 
@@ -277,7 +289,7 @@ public class FeedFragment extends ListFragment implements DefaultFragment {
 
                         ).putExtra(
 
-                                "profileId", feedItem.getProfile(0).getProfileId()
+                                "profileId", feedItem.getProfile(0).getId()
 
                         )
 

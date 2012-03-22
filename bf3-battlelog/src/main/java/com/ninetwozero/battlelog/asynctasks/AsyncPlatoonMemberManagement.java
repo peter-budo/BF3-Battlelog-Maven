@@ -16,7 +16,8 @@ package com.ninetwozero.battlelog.asynctasks;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import com.ninetwozero.battlelog.PlatoonView;
+
+import com.ninetwozero.battlelog.PlatoonActivity;
 import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class AsyncPlatoonMemberManagement extends
@@ -78,9 +79,9 @@ public class AsyncPlatoonMemberManagement extends
     @Override
     protected void onPostExecute(Boolean result) {
 
-        if (context instanceof PlatoonView) {
+        if (context instanceof PlatoonActivity) {
 
-            ((PlatoonView) context).reload();
+            ((PlatoonActivity) context).reload();
 
         }
 

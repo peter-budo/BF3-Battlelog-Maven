@@ -14,6 +14,8 @@
 
 package com.ninetwozero.battlelog.adapters;
 
+import java.util.List;
+
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -22,11 +24,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.WeaponVehicleListData;
 import com.ninetwozero.battlelog.misc.PublicUtils;
-
-import java.util.List;
 
 public class WeaponVehicleListAdapter extends BaseAdapter {
 
@@ -79,20 +80,21 @@ public class WeaponVehicleListAdapter extends BaseAdapter {
                     parent, false);
 
         }
-        
-        //Populate fields
+
+        // Populate fields
         ((TextView) convertView.findViewById(R.id.text_title)).setText(data.getTitle());
-        ((ImageView) convertView.findViewById(R.id.image_item)).setImageBitmap( 
-                
-                BitmapFactory.decodeFile( PublicUtils.getCachePath(context) + data.getTitle() + ".png" )
-                
-        );
-        
+        ((ImageView) convertView.findViewById(R.id.image_item)).setImageBitmap(
+
+                BitmapFactory.decodeFile(PublicUtils.getCachePath(context) + data.getTitle()
+                        + ".png")
+
+                );
+
         // Tag it!
         convertView.setTag(data);
         return convertView;
     }
-    
+
     public void setDataArray(List<WeaponVehicleListData> data) {
 
         // Let's do this

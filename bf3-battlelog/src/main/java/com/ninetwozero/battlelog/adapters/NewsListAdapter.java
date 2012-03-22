@@ -14,6 +14,8 @@
 
 package com.ninetwozero.battlelog.adapters;
 
+import java.util.List;
+
 import android.content.Context;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -21,11 +23,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.NewsData;
 import com.ninetwozero.battlelog.misc.PublicUtils;
-
-import java.util.List;
 
 public class NewsListAdapter extends BaseAdapter {
 
@@ -87,9 +88,9 @@ public class NewsListAdapter extends BaseAdapter {
 
         // Parse the data
         String authorText = context.getString(R.string.info_news_posted_by)
-                .replace("{author}", currentItem.getAuthor().getAccountName())
+                .replace("{author}", currentItem.getAuthor().getUsername())
                 .replace("{date}", PublicUtils.getRelativeDate(context, currentItem.getDate()));
-        
+
         // Parse it!
         String commentText = ((currentItem.getNumComments() == 1) ? context
                 .getString(R.string.info_comment_s) : context
@@ -98,7 +99,7 @@ public class NewsListAdapter extends BaseAdapter {
 
         // Set the views
         ((TextView) convertView.findViewById(R.id.text_title)).setText(currentItem.getTitle());
-        ((TextView) convertView.findViewById(R.id.text_author)).setText(Html.fromHtml( authorText ) );
+        ((TextView) convertView.findViewById(R.id.text_author)).setText(Html.fromHtml(authorText));
         ((TextView) convertView.findViewById(R.id.text_comment)).setText(commentText);
 
         // Hook it up on the tag

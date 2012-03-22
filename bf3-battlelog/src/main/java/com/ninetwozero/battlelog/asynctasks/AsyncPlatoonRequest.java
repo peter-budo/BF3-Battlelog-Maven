@@ -17,6 +17,7 @@ package com.ninetwozero.battlelog.asynctasks;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
+
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
 import com.ninetwozero.battlelog.misc.WebsiteHandler;

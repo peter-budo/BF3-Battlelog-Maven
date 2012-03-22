@@ -14,6 +14,8 @@
 
 package com.ninetwozero.battlelog.adapters;
 
+import java.util.List;
+
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,11 +24,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.UnlockData;
 import com.ninetwozero.battlelog.misc.Constants;
-
-import java.util.List;
 
 public class UnlockListAdapter extends BaseAdapter {
 

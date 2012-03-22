@@ -22,15 +22,21 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
-import android.view.*;
+import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.ninetwozero.battlelog.PlatoonInviteView;
-import com.ninetwozero.battlelog.ProfileView;
+
+import com.ninetwozero.battlelog.PlatoonInviteActivity;
+import com.ninetwozero.battlelog.ProfileActivity;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.adapters.PlatoonUserListAdapter;
 import com.ninetwozero.battlelog.asynctasks.AsyncPlatoonMemberManagement;
@@ -192,7 +198,7 @@ public class PlatoonMemberFragment extends ListFragment implements DefaultFragme
 
             new Intent(
 
-                    context, PlatoonInviteView.class
+                    context, PlatoonInviteActivity.class
 
             ).putExtra(
 
@@ -285,7 +291,7 @@ public class PlatoonMemberFragment extends ListFragment implements DefaultFragme
 
                     startActivity(
 
-                    new Intent(context, ProfileView.class).putExtra(
+                    new Intent(context, ProfileActivity.class).putExtra(
 
                             "profile", data
 
@@ -308,14 +314,14 @@ public class PlatoonMemberFragment extends ListFragment implements DefaultFragme
                                 Toast.LENGTH_SHORT).show();
 
                     }
-                    new AsyncPlatoonMemberManagement(context, data.getProfileId(),
+                    new AsyncPlatoonMemberManagement(context, data.getId(),
                             platoonData.getId(), 1).execute(!data.isAdmin());
 
                 } else if (item.getItemId() == 2) {
 
                     Toast.makeText(context, R.string.info_platoon_member_kicking,
                             Toast.LENGTH_SHORT).show();
-                    new AsyncPlatoonMemberManagement(context, data.getProfileId(),
+                    new AsyncPlatoonMemberManagement(context, data.getId(),
                             platoonData.getId(), 2).execute();
 
                 } else if (item.getItemId() == 3) {
@@ -324,7 +330,7 @@ public class PlatoonMemberFragment extends ListFragment implements DefaultFragme
                             Toast.LENGTH_SHORT).show();
                     new AsyncPlatoonRespond(
 
-                            context, platoonData.getId(), data.getProfileId(), true
+                            context, platoonData.getId(), data.getId(), true
 
                     ).execute(sharedPreferences.getString(
                             Constants.SP_BL_CHECKSUM, ""));
@@ -336,7 +342,7 @@ public class PlatoonMemberFragment extends ListFragment implements DefaultFragme
                             Toast.LENGTH_SHORT).show();
                     new AsyncPlatoonRespond(
 
-                            context, platoonData.getId(), data.getProfileId(), false
+                            context, platoonData.getId(), data.getId(), false
 
                     ).execute(sharedPreferences.getString(
                             Constants.SP_BL_CHECKSUM, ""));

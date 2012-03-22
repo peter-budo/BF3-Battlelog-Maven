@@ -14,6 +14,8 @@
 
 package com.ninetwozero.battlelog.adapters;
 
+import java.util.List;
+
 import android.content.Context;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -21,11 +23,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.Board;
 import com.ninetwozero.battlelog.misc.PublicUtils;
-
-import java.util.List;
 
 public class ThreadListAdapter extends BaseAdapter {
 
@@ -156,7 +157,7 @@ public class ThreadListAdapter extends BaseAdapter {
 
                                     ).replace(
 
-                                            "{user}", currentItem.getOwner().getAccountName()
+                                            "{user}", currentItem.getOwner().getUsername()
 
                                     )
 
@@ -181,7 +182,7 @@ public class ThreadListAdapter extends BaseAdapter {
 
                                             "{user}",
                                             currentItem.getLastPoster()
-                                                    .getAccountName()
+                                                    .getUsername()
 
                                     )
 

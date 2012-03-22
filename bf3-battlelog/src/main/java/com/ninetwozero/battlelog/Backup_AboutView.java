@@ -14,6 +14,8 @@
 
 package com.ninetwozero.battlelog;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -27,12 +29,11 @@ import android.view.View;
 import android.widget.TabHost;
 import android.widget.TabHost.TabContentFactory;
 import android.widget.TextView;
+
 import com.ninetwozero.battlelog.datatypes.ShareableCookie;
 import com.ninetwozero.battlelog.misc.Constants;
 import com.ninetwozero.battlelog.misc.PublicUtils;
 import com.ninetwozero.battlelog.misc.RequestHandler;
-
-import java.util.ArrayList;
 
 public class Backup_AboutView extends Activity {
 
@@ -58,7 +59,7 @@ public class Backup_AboutView extends Activity {
 
         if (icicle != null && icicle.containsKey(Constants.SUPER_COOKIES)) {
 
-            ArrayList<ShareableCookie> shareableCookies = icicle
+            List<ShareableCookie> shareableCookies = icicle
                     .getParcelableArrayList(Constants.SUPER_COOKIES);
             RequestHandler.setCookies(shareableCookies);
 

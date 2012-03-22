@@ -14,18 +14,19 @@
 
 package com.ninetwozero.battlelog.adapters;
 
+import java.util.List;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.GeneralSearchResult;
 import com.ninetwozero.battlelog.datatypes.PlatoonData;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
-
-import java.util.List;
 
 public class SearchDataAdapter extends BaseAdapter {
 
@@ -62,7 +63,7 @@ public class SearchDataAdapter extends BaseAdapter {
     public long getItemId(int position) {
 
         GeneralSearchResult temp = this.itemArray.get(position);
-        return (temp.hasProfileData() ? temp.getProfileData().getProfileId()
+        return (temp.hasProfileData() ? temp.getProfileData().getId()
                 : temp.getPlatoonData().getId());
 
     }
@@ -110,7 +111,7 @@ public class SearchDataAdapter extends BaseAdapter {
 
             // Set the fields
             ((TextView) convertView.findViewById(R.id.string_name))
-                    .setText(profileData.getAccountName());
+                    .setText(profileData.getUsername());
             /*
              * ((ImageView) convertView.findViewById( R.id.image_avatar
              * )).setImageBitmap( BitmapFactory.decodeFile(

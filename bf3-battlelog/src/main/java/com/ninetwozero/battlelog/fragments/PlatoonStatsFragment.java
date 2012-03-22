@@ -14,18 +14,36 @@
 
 package com.ninetwozero.battlelog.fragments;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.*;
-import android.widget.*;
-import com.ninetwozero.battlelog.R;
-import com.ninetwozero.battlelog.datatypes.*;
-import com.ninetwozero.battlelog.misc.PublicUtils;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.List;
+import com.ninetwozero.battlelog.R;
+import com.ninetwozero.battlelog.datatypes.DefaultFragment;
+import com.ninetwozero.battlelog.datatypes.PlatoonData;
+import com.ninetwozero.battlelog.datatypes.PlatoonInformation;
+import com.ninetwozero.battlelog.datatypes.PlatoonStats;
+import com.ninetwozero.battlelog.datatypes.PlatoonStatsItem;
+import com.ninetwozero.battlelog.datatypes.PlatoonTopStatsItem;
+import com.ninetwozero.battlelog.misc.Constants;
+import com.ninetwozero.battlelog.misc.PublicUtils;
 
 public class PlatoonStatsFragment extends Fragment implements DefaultFragment {
 
@@ -73,6 +91,10 @@ public class PlatoonStatsFragment extends Fragment implements DefaultFragment {
 
         // Get the activity
         Activity activity = getActivity();
+
+        Log.d(Constants.DEBUG_TAG, "pi => " + pi);
+        Log.d(Constants.DEBUG_TAG, "activity => " + activity);
+
         if (activity == null) {
             return;
         }
@@ -216,7 +238,7 @@ public class PlatoonStatsFragment extends Fragment implements DefaultFragment {
             if (tempTopStats.getProfile() != null) {
 
                 ((TextView) cacheView.findViewById(R.id.text_name))
-                        .setText(tempTopStats.getProfile().getAccountName()
+                        .setText(tempTopStats.getProfile().getUsername()
                                 + "");
                 ((TextView) cacheView.findViewById(R.id.text_spm))
                         .setText(tempTopStats.getSPM() + "");
@@ -342,6 +364,8 @@ public class PlatoonStatsFragment extends Fragment implements DefaultFragment {
     }
 
     public void reload() {
+
+        showStats(platoonInformation);
 
     }
 

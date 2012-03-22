@@ -23,33 +23,33 @@ public class PlatoonMemberData extends ProfileData implements Parcelable {
     private int membershipLevel;
 
     // Constructs
-    public PlatoonMemberData(String an, String pn, long p, long pf, int n,
-            String im, int m) {
+    public PlatoonMemberData(long pf, String un, PersonaData p, String im, int m) {
 
-        this(an, new String[] {
-                pn
-        }, new long[] {
-                p
-        }, pf, new int[] {
-                n
-        },
-                im, m);
+        super(pf, un, p, im);
+        membershipLevel = m;
 
     }
 
-    public PlatoonMemberData(String an, String[] pn, long[] p, long pf,
-            int[] n, String im, int m) {
+    public PlatoonMemberData(long pf, String un, PersonaData[] p, String im, int m) {
 
-        super(an, pn, p, pf, n, im);
-        this.membershipLevel = m;
+        super(pf, un, p, im);
+        membershipLevel = m;
 
     }
 
-    public PlatoonMemberData(String an, String[] pn, long[] p, long pf,
-            int[] n, String im, boolean on, boolean pl, int m) {
+    public PlatoonMemberData(long pf, String un, PersonaData p, String im, boolean on, boolean pl,
+            int m) {
 
-        super(an, pn, p, pf, n, im, on, pl);
-        this.membershipLevel = m;
+        super(pf, un, p, im, on, pl);
+        membershipLevel = m;
+
+    }
+
+    public PlatoonMemberData(long pf, String un, PersonaData[] p, String im, boolean on,
+            boolean pl, int m) {
+
+        super(pf, un, p, im, on, pl);
+        membershipLevel = m;
 
     }
 
@@ -62,33 +62,24 @@ public class PlatoonMemberData extends ProfileData implements Parcelable {
 
     // Getters
     public int getMembershipLevel() {
-        return this.membershipLevel;
+        return membershipLevel;
     }
 
     public boolean isAdmin() {
-        return (this.membershipLevel == 128);
-    }
-
-    public void readFromParcel(Parcel in) {
-
-        // Arrays
-        this.personaName = in.createStringArray();
-        this.personaId = in.createLongArray();
-        this.platformId = in.createIntArray();
-
-        // Let's retrieve them, same order as above
-        this.username = in.readString();
-        this.profileId = in.readLong();
-        this.gravatarHash = in.readString();
-        this.isOnline = (in.readInt() == 1);
-        this.isPlaying = (in.readInt() == 1);
-        this.membershipLevel = in.readInt();
-
+        return (membershipLevel == 128);
     }
 
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        // Everything else
+        super.writeToParcel(dest, flags);
+        dest.writeInt(membershipLevel);
     }
 
     public static final Parcelable.Creator<PlatoonMemberData> CREATOR = new Parcelable.Creator<PlatoonMemberData>() {

@@ -14,15 +14,16 @@
 
 package com.ninetwozero.battlelog.asynctasks;
 
+import net.sf.andhsli.hotspotlogin.SimpleCrypto;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.Toast;
+
 import com.ninetwozero.battlelog.datatypes.PostData;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
 import com.ninetwozero.battlelog.misc.Constants;
 import com.ninetwozero.battlelog.misc.WebsiteHandler;
-import net.sf.andhsli.hotspotlogin.SimpleCrypto;
 
 public class AsyncSessionValidate extends AsyncTask<PostData, Integer, Boolean> {
 

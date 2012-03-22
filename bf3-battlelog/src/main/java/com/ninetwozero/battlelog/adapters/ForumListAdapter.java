@@ -14,6 +14,8 @@
 
 package com.ninetwozero.battlelog.adapters;
 
+import java.util.List;
+
 import android.content.Context;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -21,10 +23,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.Board;
-
-import java.util.List;
 
 public class ForumListAdapter extends BaseAdapter {
 

@@ -19,6 +19,7 @@ import android.os.AsyncTask;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.fragments.FeedFragment;
 import com.ninetwozero.battlelog.misc.WebsiteHandler;

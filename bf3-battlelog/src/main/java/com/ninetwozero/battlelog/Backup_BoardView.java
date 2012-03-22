@@ -14,6 +14,8 @@
 
 package com.ninetwozero.battlelog;
 
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -26,16 +28,23 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.*;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.ninetwozero.battlelog.adapters.ForumListAdapter;
 import com.ninetwozero.battlelog.datatypes.Board;
 import com.ninetwozero.battlelog.datatypes.ShareableCookie;
-import com.ninetwozero.battlelog.misc.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.ninetwozero.battlelog.misc.Constants;
+import com.ninetwozero.battlelog.misc.DataBank;
+import com.ninetwozero.battlelog.misc.PublicUtils;
+import com.ninetwozero.battlelog.misc.RequestHandler;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class Backup_BoardView extends ListActivity {
 
@@ -63,7 +72,7 @@ public class Backup_BoardView extends ListActivity {
         // Did it get passed on?
         if (icicle != null && icicle.containsKey(Constants.SUPER_COOKIES)) {
 
-            ArrayList<ShareableCookie> shareableCookies = icicle
+            List<ShareableCookie> shareableCookies = icicle
                     .getParcelableArrayList(Constants.SUPER_COOKIES);
             RequestHandler.setCookies(shareableCookies);
 
@@ -154,7 +163,7 @@ public class Backup_BoardView extends ListActivity {
 
         } else if (item.getItemId() == R.id.option_search) {
 
-            startActivity(new Intent(this, ForumSearchView.class));
+            startActivity(new Intent(this, ForumSearchActivity.class));
 
         }
 
@@ -316,7 +325,7 @@ public class Backup_BoardView extends ListActivity {
         // Hotkeys
         if (keyCode == KeyEvent.KEYCODE_SEARCH) {
 
-            startActivity(new Intent(this, ForumSearchView.class));
+            startActivity(new Intent(this, ForumSearchActivity.class));
 
         }
         return super.onKeyDown(keyCode, event);

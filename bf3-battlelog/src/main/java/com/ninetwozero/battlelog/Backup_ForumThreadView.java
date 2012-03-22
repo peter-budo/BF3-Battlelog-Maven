@@ -14,7 +14,17 @@
 
 package com.ninetwozero.battlelog;
 
-import android.app.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,23 +34,37 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.view.*;
+import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.*;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.SlidingDrawer;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.ninetwozero.battlelog.adapters.ThreadPostListAdapter;
 import com.ninetwozero.battlelog.asynctasks.AsyncPostInThread;
 import com.ninetwozero.battlelog.datatypes.Board;
 import com.ninetwozero.battlelog.datatypes.PlatoonData;
-import com.ninetwozero.battlelog.misc.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.ninetwozero.battlelog.misc.BBCodeUtils;
+import com.ninetwozero.battlelog.misc.Constants;
+import com.ninetwozero.battlelog.misc.PublicUtils;
+import com.ninetwozero.battlelog.misc.RequestHandler;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class Backup_ForumThreadView extends ListActivity {
 
@@ -194,7 +218,7 @@ public class Backup_ForumThreadView extends ListActivity {
 
         } else if (item.getItemId() == R.id.option_search) {
 
-            startActivity(new Intent(this, ForumSearchView.class));
+            startActivity(new Intent(this, ForumSearchActivity.class));
 
         } else if (item.getItemId() == R.id.option_back) {
 
@@ -384,7 +408,7 @@ public class Backup_ForumThreadView extends ListActivity {
                 switch (item.getItemId()) {
 
                     case 0:
-                        startActivity(new Intent(this, ProfileView.class).putExtra(
+                        startActivity(new Intent(this, ProfileActivity.class).putExtra(
                                 "profile", data.getProfileData()));
                         break;
 
@@ -403,7 +427,7 @@ public class Backup_ForumThreadView extends ListActivity {
                                                 ).replace(
 
                                                         "{username}",
-                                                        data.getProfileData().getAccountName()
+                                                        data.getProfileData().getUsername()
 
                                                 )
 
@@ -421,7 +445,7 @@ public class Backup_ForumThreadView extends ListActivity {
                         break;
 
                     case 3:
-                        startActivity(new Intent(this, ForumReportView.class)
+                        startActivity(new Intent(this, ForumReportActivity.class)
                                 .putExtra("postId", data.getPostId()));
                         break;
 
@@ -563,7 +587,7 @@ public class Backup_ForumThreadView extends ListActivity {
 
         } else if (keyCode == KeyEvent.KEYCODE_SEARCH) {
 
-            startActivity(new Intent(this, ForumSearchView.class));
+            startActivity(new Intent(this, ForumSearchActivity.class));
 
         }
         return super.onKeyDown(keyCode, event);
@@ -856,7 +880,7 @@ public class Backup_ForumThreadView extends ListActivity {
 
                         String username = currentLink.substring(index + 6,
                                 linkEndPos);
-                        intent = new Intent(context, ProfileView.class)
+                        intent = new Intent(context, ProfileActivity.class)
                                 .putExtra(
 
                                         "profile", WebsiteHandler
@@ -872,7 +896,7 @@ public class Backup_ForumThreadView extends ListActivity {
 
                             long platoonId = Long.parseLong(currentLink
                                     .substring(index + 9, linkEndPos));
-                            intent = new Intent(context, PlatoonView.class)
+                            intent = new Intent(context, PlatoonActivity.class)
                                     .putExtra(
 
                                             "platoon", new PlatoonData(platoonId, 0, 0,
@@ -890,7 +914,7 @@ public class Backup_ForumThreadView extends ListActivity {
                                 long personaId = Long
                                         .parseLong(currentLink.substring(0,
                                                 currentLink.indexOf('/')));
-                                intent = new Intent(context, ProfileView.class)
+                                intent = new Intent(context, ProfileActivity.class)
                                         .putExtra(
 
                                                 "profile",

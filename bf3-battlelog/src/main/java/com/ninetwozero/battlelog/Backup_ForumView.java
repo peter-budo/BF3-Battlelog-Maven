@@ -14,6 +14,8 @@
 
 package com.ninetwozero.battlelog;
 
+import java.util.List;
+
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -24,10 +26,21 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.*;
-import android.widget.*;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.SlidingDrawer;
 import android.widget.SlidingDrawer.OnDrawerCloseListener;
 import android.widget.SlidingDrawer.OnDrawerOpenListener;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.ninetwozero.battlelog.adapters.ThreadListAdapter;
 import com.ninetwozero.battlelog.asynctasks.AsyncCreateNewThread;
 import com.ninetwozero.battlelog.datatypes.Board;
@@ -35,8 +48,6 @@ import com.ninetwozero.battlelog.misc.BBCodeUtils;
 import com.ninetwozero.battlelog.misc.Constants;
 import com.ninetwozero.battlelog.misc.PublicUtils;
 import com.ninetwozero.battlelog.misc.WebsiteHandler;
-
-import java.util.List;
 
 public class Backup_ForumView extends ListActivity {
 
@@ -247,7 +258,7 @@ public class Backup_ForumView extends ListActivity {
 
         } else if (item.getItemId() == R.id.option_search) {
 
-            startActivity(new Intent(this, ForumSearchView.class));
+            startActivity(new Intent(this, ForumSearchActivity.class));
 
         } else if (item.getItemId() == R.id.option_back) {
 
@@ -412,7 +423,7 @@ public class Backup_ForumView extends ListActivity {
 
         } else if (keyCode == KeyEvent.KEYCODE_SEARCH) {
 
-            startActivity(new Intent(this, ForumSearchView.class));
+            startActivity(new Intent(this, ForumSearchActivity.class));
 
         }
 

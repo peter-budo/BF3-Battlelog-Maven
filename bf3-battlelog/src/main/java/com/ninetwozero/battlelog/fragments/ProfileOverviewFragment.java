@@ -24,16 +24,33 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.*;
-import com.ninetwozero.battlelog.PlatoonView;
-import com.ninetwozero.battlelog.ProfileView;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.ninetwozero.battlelog.PlatoonActivity;
+import com.ninetwozero.battlelog.ProfileActivity;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.asynctasks.AsyncFriendRemove;
 import com.ninetwozero.battlelog.asynctasks.AsyncFriendRequest;
-import com.ninetwozero.battlelog.datatypes.*;
-import com.ninetwozero.battlelog.misc.*;
+import com.ninetwozero.battlelog.datatypes.DefaultFragment;
+import com.ninetwozero.battlelog.datatypes.PlatoonData;
+import com.ninetwozero.battlelog.datatypes.ProfileData;
+import com.ninetwozero.battlelog.datatypes.ProfileInformation;
+import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
+import com.ninetwozero.battlelog.misc.CacheHandler;
+import com.ninetwozero.battlelog.misc.Constants;
+import com.ninetwozero.battlelog.misc.PublicUtils;
+import com.ninetwozero.battlelog.misc.SessionKeeper;
+import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class ProfileOverviewFragment extends Fragment implements DefaultFragment {
 
@@ -216,7 +233,7 @@ public class ProfileOverviewFragment extends Fragment implements DefaultFragment
                                 // On-click
                                 startActivity(
 
-                                new Intent(context, PlatoonView.class).putExtra(
+                                new Intent(context, PlatoonActivity.class).putExtra(
 
                                         "platoon", (PlatoonData) v.getTag()
 
@@ -272,7 +289,7 @@ public class ProfileOverviewFragment extends Fragment implements DefaultFragment
 
                 // Get...
                 profileInformation = CacheHandler.Profile.select(context,
-                        profileData.getProfileId());
+                        profileData.getId());
 
                 // We got one?!
                 return (profileInformation != null);
@@ -292,7 +309,7 @@ public class ProfileOverviewFragment extends Fragment implements DefaultFragment
 
                 // Siiiiiiiiilent refresh
                 new AsyncRefresh(SessionKeeper.getProfileData()
-                        .getProfileId()).execute();
+                        .getId()).execute();
                 if (this.progressDialog != null) {
                     this.progressDialog.dismiss();
                 }
@@ -301,12 +318,7 @@ public class ProfileOverviewFragment extends Fragment implements DefaultFragment
                 showProfile(profileInformation);
 
                 // Set the profileData...
-                profileData.setPersonaId(profileInformation
-                        .getAllPersonas());
-                profileData.setPersonaName(profileInformation
-                        .getAllPersonaNames());
-                profileData.setPlatformId(profileInformation
-                        .getAllPlatforms());
+                profileData.setPersona(profileInformation.getAllPersonas());
 
                 // ...and then send it to the stats
                 sendToStats(profileData);
@@ -314,7 +326,7 @@ public class ProfileOverviewFragment extends Fragment implements DefaultFragment
             } else {
 
                 new AsyncRefresh(SessionKeeper.getProfileData()
-                        .getProfileId(), progressDialog).execute();
+                        .getId(), progressDialog).execute();
 
             }
 
@@ -354,15 +366,25 @@ public class ProfileOverviewFragment extends Fragment implements DefaultFragment
 
             try {
 
+                // Let's try something
+                if (profileData.getNumPersonas() == 0) {
+
+                    profileData = WebsiteHandler.getPersonaIdFromProfile(profileData.getId());
+
+                }
+
                 // Let's get the personas!
                 profileInformation = WebsiteHandler
                         .getProfileInformationForUser(
 
                                 context,
                                 profileData,
-                                this.activeProfileId
+                                activeProfileId
 
                         );
+
+                // ...and then send it to the stats
+                sendToStats(profileData);
 
                 return (profileInformation != null);
 
@@ -413,19 +435,19 @@ public class ProfileOverviewFragment extends Fragment implements DefaultFragment
 
         // ASYNC!!!
         new AsyncRefresh(SessionKeeper.getProfileData()
-                .getProfileId()).execute();
+                .getId()).execute();
 
     }
 
     public void sendToStats(ProfileData p) {
 
-        ((ProfileView) context).openStats(p);
+        ((ProfileActivity) context).openStats(p);
 
     }
 
     public void setFeedPermission(boolean c) {
 
-        ((ProfileView) context).setFeedPermission(c);
+        ((ProfileActivity) context).setFeedPermission(c);
 
     }
 
@@ -477,7 +499,7 @@ public class ProfileOverviewFragment extends Fragment implements DefaultFragment
 
         if (item.getItemId() == R.id.option_friendadd) {
 
-            new AsyncFriendRequest(context, profileData.getProfileId()).execute(
+            new AsyncFriendRequest(context, profileData.getId()).execute(
 
                     sharedPreferences.getString(
 
@@ -487,7 +509,7 @@ public class ProfileOverviewFragment extends Fragment implements DefaultFragment
 
         } else if (item.getItemId() == R.id.option_frienddel) {
 
-            new AsyncFriendRemove(context, profileData.getProfileId()).execute(
+            new AsyncFriendRemove(context, profileData.getId()).execute(
 
                     sharedPreferences.getString(
 

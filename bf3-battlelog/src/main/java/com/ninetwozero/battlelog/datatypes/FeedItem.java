@@ -18,7 +18,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.ninetwozero.battlelog.*;
+
+import com.ninetwozero.battlelog.AssignmentActivity;
+import com.ninetwozero.battlelog.Backup_ForumThreadView;
+import com.ninetwozero.battlelog.PlatoonActivity;
+import com.ninetwozero.battlelog.ProfileActivity;
+import com.ninetwozero.battlelog.R;
+import com.ninetwozero.battlelog.UnlockActivity;
 import com.ninetwozero.battlelog.misc.WebsiteHandler;
 
 public class FeedItem implements Parcelable {
@@ -99,11 +105,11 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username1}", profileData[0].getAccountName()
+                    "{username1}", profileData[0].getUsername()
 
                     ).replace(
 
-                            "{username2}", profileData[1].getAccountName()
+                            "{username2}", profileData[1].getUsername()
 
                     );
 
@@ -111,7 +117,7 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username}", profileData[0].getAccountName()
+                    "{username}", profileData[0].getUsername()
 
                     );
 
@@ -120,7 +126,7 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username}", profileData[0].getAccountName()
+                    "{username}", profileData[0].getUsername()
 
                     );
 
@@ -128,7 +134,7 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username}", profileData[0].getAccountName()
+                    "{username}", profileData[0].getUsername()
 
                     );
 
@@ -136,7 +142,7 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username}", profileData[0].getAccountName()
+                    "{username}", profileData[0].getUsername()
 
                     );
 
@@ -144,7 +150,7 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username}", profileData[0].getAccountName()
+                    "{username}", profileData[0].getUsername()
 
                     );
 
@@ -152,7 +158,7 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username}", profileData[0].getAccountName()
+                    "{username}", profileData[0].getUsername()
 
                     );
 
@@ -160,11 +166,11 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username1}", profileData[0].getAccountName()
+                    "{username1}", profileData[0].getUsername()
 
                     ).replace(
 
-                            "{username2}", profileData[1].getAccountName()
+                            "{username2}", profileData[1].getUsername()
 
                     );
 
@@ -173,7 +179,7 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username}", profileData[0].getAccountName()
+                    "{username}", profileData[0].getUsername()
 
                     );
 
@@ -183,7 +189,7 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username}", profileData[0].getAccountName()
+                    "{username}", profileData[0].getUsername()
 
                     );
 
@@ -191,7 +197,7 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username}", profileData[0].getAccountName()
+                    "{username}", profileData[0].getUsername()
 
                     );
 
@@ -199,11 +205,11 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username1}", profileData[0].getAccountName()
+                    "{username1}", profileData[0].getUsername()
 
                     ).replace(
 
-                            "{username2}", profileData[1].getAccountName()
+                            "{username2}", profileData[1].getUsername()
 
                     );
 
@@ -212,7 +218,7 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username}", profileData[0].getAccountName()
+                    "{username}", profileData[0].getUsername()
 
                     );
 
@@ -220,7 +226,7 @@ public class FeedItem implements Parcelable {
 
             return this.title.replace(
 
-                    "{username}", profileData[0].getAccountName()
+                    "{username}", profileData[0].getUsername()
 
                     );
 
@@ -266,10 +272,10 @@ public class FeedItem implements Parcelable {
 
             try {
 
-                return new Intent(c, AssignmentView.class).putExtra(
+                return new Intent(c, AssignmentActivity.class).putExtra(
 
                         "profile", WebsiteHandler
-                                .getPersonaIdFromProfile(profileData[0].getProfileId())
+                                .getPersonaIdFromProfile(profileData[0].getId())
 
                         );
 
@@ -302,12 +308,12 @@ public class FeedItem implements Parcelable {
 
         ) {
 
-            return new Intent(c, PlatoonView.class).putExtra("platoon",
+            return new Intent(c, PlatoonActivity.class).putExtra("platoon",
                     new PlatoonData(this.itemId));
 
         } else if (type.equals("gamereport")) {
 
-            return new Intent(c, UnlockView.class).putExtra("profile",
+            return new Intent(c, UnlockActivity.class).putExtra("profile",
                     this.profileData[0]);
 
         } else if (
@@ -321,7 +327,7 @@ public class FeedItem implements Parcelable {
 
         ) {
 
-            return new Intent(c, ProfileView.class).putExtra(
+            return new Intent(c, ProfileActivity.class).putExtra(
 
                     "profile", profileData[0]
 

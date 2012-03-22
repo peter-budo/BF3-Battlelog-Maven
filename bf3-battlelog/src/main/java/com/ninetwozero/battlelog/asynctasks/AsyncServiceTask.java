@@ -14,6 +14,7 @@
 
 package com.ninetwozero.battlelog.asynctasks;
 
+import net.sf.andhsli.hotspotlogin.SimpleCrypto;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -25,14 +26,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.ninetwozero.battlelog.Backup_Dashboard;
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.PostData;
-import com.ninetwozero.battlelog.datatypes.ProfileData;
+import com.ninetwozero.battlelog.datatypes.SessionKeeperPackage;
 import com.ninetwozero.battlelog.misc.Constants;
 import com.ninetwozero.battlelog.misc.SessionKeeper;
 import com.ninetwozero.battlelog.misc.WebsiteHandler;
-import net.sf.andhsli.hotspotlogin.SimpleCrypto;
 
 public class AsyncServiceTask extends AsyncTask<String, Integer, Integer> {
 
@@ -77,7 +78,7 @@ public class AsyncServiceTask extends AsyncTask<String, Integer, Integer> {
                         .getString(Constants.SP_BL_PASSWORD, ""));
 
                 // Do the login
-                ProfileData profileData = WebsiteHandler.doLogin(
+                SessionKeeperPackage sessionKeeperPackage = WebsiteHandler.doLogin(
 
                         context, new PostData[] {
 
@@ -93,8 +94,9 @@ public class AsyncServiceTask extends AsyncTask<String, Integer, Integer> {
                         );
 
                 // Did it work?
-                if (profileData != null) {
-                    SessionKeeper.setProfileData(profileData);
+                if (sessionKeeperPackage != null) {
+                    SessionKeeper.setProfileData(sessionKeeperPackage.getProfileData());
+                    SessionKeeper.setPlatoonData(sessionKeeperPackage.getPlatoons());
                 }
 
                 return -1;

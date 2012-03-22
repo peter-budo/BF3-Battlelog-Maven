@@ -523,4 +523,15 @@
 	<string name="info_credits_nolink">No link to send you to!</string>
 	<string name="info_news_empty">No news found.</string>
 	<string name="info_news_posted_by">Posted by &lt;b>{author}&lt;/b> {date}</string>
+	<string name="info_settings_fullscreen_true">The app will be in fullscreen mode.</string>
+	<string name="info_settings_fullscreen_false">The app will show the title and notification bar.</string>
+	<string name="info_settings_fullscreen">Fullscreen</string>
+	<string name="label_app_settings">Application settings</string>
+	<string name="title_profile_settings">BF3 Battlelog - Setting up your profile</string>
+	<string name="title_platoon_new">BF3 Battlelog - Creating a new platoon</string>
+	<string name="info_platoon_new_empty_name">You need to enter a name for the platoon.</string>
+	<string name="info_platoon_new_empty_tag">You need to enter a tag for the platoon.</string>
+	<string name="info_platoon_new_creating">Creating the platoon...</string>
+	<string name="info_platoon_new_true">The platoon has been created!</string>
+	<string name="info_platoon_new_false">The platoon could not be created.</string>
 </resources>

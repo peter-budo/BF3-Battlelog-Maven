@@ -1,6 +1,8 @@
 
 package com.ninetwozero.battlelog.misc;
 
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,9 +10,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
-import com.ninetwozero.battlelog.datatypes.DatabaseInformationException;
 
-import java.util.List;
+import com.ninetwozero.battlelog.datatypes.DatabaseInformationException;
 
 public class SQLiteManager {
 
@@ -188,7 +189,7 @@ public class SQLiteManager {
             /* TODO: Handle DB UPDATEs */
             if ((newVersion - 2) > oldVersion) {
 
-                this.onCreate(db);
+                onCreate(db);
 
             } else {
 
@@ -224,22 +225,22 @@ public class SQLiteManager {
     public SQLiteManager(Context context) {
 
         // Set the context
-        this.CONTEXT = context;
+        CONTEXT = context;
 
         // Initialize an "OpenHelper"
-        OpenHelper openHelper = new OpenHelper(this.CONTEXT);
+        OpenHelper openHelper = new OpenHelper(CONTEXT);
 
         // Set the DB as writeAble
-        this.DB = openHelper.getWritableDatabase();
+        DB = openHelper.getWritableDatabase();
 
     }
 
     public final void close() {
 
-        if (this.STATEMENT != null)
-            this.STATEMENT.close();
-        if (this.DB != null)
-            this.DB.close();
+        if (STATEMENT != null)
+            STATEMENT.close();
+        if (DB != null)
+            DB.close();
         return;
 
     }
@@ -273,7 +274,7 @@ public class SQLiteManager {
         }
 
         // Let's remove from the DB
-        return this.DB.delete(table, stringWhere, values);
+        return DB.delete(table, stringWhere, values);
 
     }
 
@@ -285,7 +286,7 @@ public class SQLiteManager {
         }
 
         // Clear it
-        return this.DB.delete(table, "1", null);
+        return DB.delete(table, "1", null);
 
     }
 
@@ -345,7 +346,7 @@ public class SQLiteManager {
 
         }
 
-        this.STATEMENT = this.DB.compileStatement("INSERT INTO " + table + "( "
+        STATEMENT = DB.compileStatement("INSERT INTO " + table + "( "
                 + stringFields + ") VALUES " + stringValues);
 
         // Let's bind the parameters
@@ -353,13 +354,13 @@ public class SQLiteManager {
 
             for (int j = 1; j <= countValues; j++) {
 
-                this.STATEMENT.bindString((i * j), values.get(i - 1)[j - 1]);
+                STATEMENT.bindString((i * j), values.get(i - 1)[j - 1]);
 
             }
 
         }
-        // this.STATEMENT.bindString( 1, name );
-        return this.STATEMENT.executeInsert();
+        // STATEMENT.bindString( 1, name );
+        return STATEMENT.executeInsert();
     }
 
     public int update(String table, String[] fields, String[] values,
@@ -396,7 +397,7 @@ public class SQLiteManager {
         }
 
         // EXECUTE!!!
-        return this.DB.update(table, contentValues, whereField + " = ?",
+        return DB.update(table, contentValues, whereField + " = ?",
                 new String[] {
                     id + ""
                 });
@@ -448,16 +449,17 @@ public class SQLiteManager {
 
         }
 
-        this.STATEMENT = this.DB.compileStatement("INSERT INTO " + table + "( "
+        STATEMENT = DB.compileStatement("INSERT INTO " + table + "( "
                 + stringFields + ") VALUES " + "(" + stringValues + ")");
 
         // Let's bind the parameters
         for (int j = 1; j <= countValues; j++) {
-            this.STATEMENT.bindString(j, values[j - 1]);
+            // Log.d(Constants.DEBUG_TAG, fields[j-1] + " =>" + values[j-1]);
+            STATEMENT.bindString(j, values[j - 1]);
         }
 
-        // this.STATEMENT.bindString( 1, name );
-        return this.STATEMENT.executeInsert();
+        // STATEMENT.bindString( 1, name );
+        return STATEMENT.executeInsert();
     }
 
     public final Cursor query(String t, String[] p, String s, String[] sA,
@@ -472,7 +474,7 @@ public class SQLiteManager {
             };
 
         // Let's return the query
-        return this.DB.query(t, p, s, sA, g, h, o);
+        return DB.query(t, p, s, sA, g, h, o);
 
     }
 
@@ -484,7 +486,7 @@ public class SQLiteManager {
             throw new DatabaseInformationException("No table selected.");
 
         // We need to select a table
-        return this.DB.query(table, new String[] {
+        return DB.query(table, new String[] {
                 "*"
         }, null, null, null,
                 null, orderBy);
