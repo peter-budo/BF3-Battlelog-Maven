@@ -14,6 +14,11 @@
 
 package com.ninetwozero.battlelog;
 
+import java.util.List;
+import java.util.Vector;
+
+import net.peterkuterna.android.apps.swipeytabs.SwipeyTabs;
+import net.peterkuterna.android.apps.swipeytabs.SwipeyTabsPagerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,27 +29,31 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.view.*;
+import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
+
 import com.ninetwozero.battlelog.datatypes.DefaultFragmentActivity;
-import com.ninetwozero.battlelog.datatypes.ProfileData;
+import com.ninetwozero.battlelog.datatypes.PlatoonData;
+import com.ninetwozero.battlelog.datatypes.PlatoonInformation;
 import com.ninetwozero.battlelog.fragments.FeedFragment;
-import com.ninetwozero.battlelog.fragments.ProfileOverviewFragment;
-import com.ninetwozero.battlelog.fragments.ProfileStatsFragment;
+import com.ninetwozero.battlelog.fragments.PlatoonMemberFragment;
+import com.ninetwozero.battlelog.fragments.PlatoonOverviewFragment;
+import com.ninetwozero.battlelog.fragments.PlatoonStatsFragment;
 import com.ninetwozero.battlelog.misc.Constants;
 import com.ninetwozero.battlelog.misc.PublicUtils;
 import com.ninetwozero.battlelog.misc.RequestHandler;
-import com.ninetwozero.battlelog.misc.SessionKeeper;
-import net.peterkuterna.android.apps.swipeytabs.SwipeyTabs;
-import net.peterkuterna.android.apps.swipeytabs.SwipeyTabsPagerAdapter;
 
-import java.util.List;
-import java.util.Vector;
-
-public class ProfileView extends FragmentActivity implements DefaultFragmentActivity {
+public class PlatoonActivity extends FragmentActivity implements DefaultFragmentActivity {
 
     // Attributes
+    private final Context CONTEXT = this;
     private SharedPreferences sharedPreferences;
     private LayoutInflater layoutInflater;
 
@@ -53,13 +62,14 @@ public class ProfileView extends FragmentActivity implements DefaultFragmentActi
     private SwipeyTabsPagerAdapter pagerAdapter;
     private List<Fragment> listFragments;
     private FragmentManager fragmentManager;
-    private ProfileOverviewFragment fragmentOverview;
-    private ProfileStatsFragment fragmentStats;
+    private PlatoonOverviewFragment fragmentOverview;
+    private PlatoonStatsFragment fragmentStats;
+    private PlatoonMemberFragment fragmentMember;
     private FeedFragment fragmentFeed;
     private ViewPager viewPager;
 
     // Misc
-    private ProfileData profileData;
+    private PlatoonData platoonData;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -79,10 +89,9 @@ public class ProfileView extends FragmentActivity implements DefaultFragmentActi
         fragmentManager = getSupportFragmentManager();
 
         // Get the intent
-        if (getIntent().hasExtra("profile")) {
-
-            profileData = getIntent().getParcelableExtra("profile");
-
+        if (getIntent().hasExtra("platoon")) {
+            platoonData = (PlatoonData) getIntent().getParcelableExtra(
+                    "platoon");
         } else {
 
             return;
@@ -115,63 +124,12 @@ public class ProfileView extends FragmentActivity implements DefaultFragmentActi
 
     }
 
-    public void setupFragments() {
-
-        // Do we need to setup the fragments?
-        if (listFragments == null) {
-
-            // Add them to the list
-            listFragments = new Vector<Fragment>();
-            listFragments.add(fragmentOverview = (ProfileOverviewFragment) Fragment.instantiate(
-                    this, ProfileOverviewFragment.class.getName()));
-            listFragments.add(fragmentStats = (ProfileStatsFragment) Fragment.instantiate(this,
-                    ProfileStatsFragment.class.getName()));
-            listFragments.add(fragmentFeed = (FeedFragment) Fragment.instantiate(this,
-                    FeedFragment.class.getName()));
-
-            // Add the profileData
-            fragmentOverview.setProfileData(profileData);
-            fragmentStats.setProfileData(profileData);
-
-            // We need to set the type
-            fragmentFeed.setTitle(profileData.getAccountName());
-            fragmentFeed.setType(FeedFragment.TYPE_PROFILE);
-            fragmentFeed.setId(profileData.getProfileId());
-            fragmentFeed.setCanWrite(false);
-
-            // Get the ViewPager
-            viewPager = (ViewPager) findViewById(R.id.viewpager);
-            tabs = (SwipeyTabs) findViewById(R.id.swipeytabs);
-
-            // Fill the PagerAdapter & set it to the viewpager
-            pagerAdapter = new SwipeyTabsPagerAdapter(
-
-                    fragmentManager,
-                    new String[] {
-                            "OVERVIEW", "STATS", "FEED"
-                    },
-                    listFragments,
-                    viewPager,
-                    layoutInflater
-                    );
-            viewPager.setAdapter(pagerAdapter);
-            tabs.setAdapter(pagerAdapter);
-
-            // Make sure the tabs follow
-            viewPager.setOnPageChangeListener(tabs);
-            viewPager.setCurrentItem(0);
-            viewPager.setOffscreenPageLimit(2);
-
-        }
-
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate!!
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.option_profileview, menu);
+        inflater.inflate(R.menu.option_platoonview, menu);
         return super.onCreateOptionsMenu(menu);
 
     }
@@ -180,44 +138,24 @@ public class ProfileView extends FragmentActivity implements DefaultFragmentActi
     public boolean onPrepareOptionsMenu(Menu menu) {
 
         // Our own profile, no need to show the "extra" buttons
-        if (profileData.getProfileId() == SessionKeeper.getProfileData()
-                .getProfileId()) {
+        if (viewPager.getCurrentItem() == 0) {
+
+            return super.onPrepareOptionsMenu(fragmentOverview.prepareOptionsMenu(menu));
+
+        } else if (viewPager.getCurrentItem() == 1) {
+
+            return super.onPrepareOptionsMenu(fragmentStats.prepareOptionsMenu(menu));
+
+        } else if (viewPager.getCurrentItem() == 2) {
+
+            return super.onPrepareOptionsMenu(fragmentMember.prepareOptionsMenu(menu));
+
+        } else {
 
             menu.removeItem(R.id.option_friendadd);
             menu.removeItem(R.id.option_frienddel);
             menu.removeItem(R.id.option_compare);
             menu.removeItem(R.id.option_unlocks);
-
-        } else {
-
-            // Which tab is operating?
-            if (viewPager.getCurrentItem() == 0) {
-
-                return super.onPrepareOptionsMenu(fragmentOverview.prepareOptionsMenu(menu));
-
-            } else if (viewPager.getCurrentItem() == 1) {
-
-                return super.onPrepareOptionsMenu(fragmentStats.prepareOptionsMenu(menu));
-
-            } else if (viewPager.getCurrentItem() == 2) {
-
-                ((MenuItem) menu.findItem(R.id.option_friendadd))
-                        .setVisible(false);
-                ((MenuItem) menu.findItem(R.id.option_frienddel))
-                        .setVisible(false);
-                ((MenuItem) menu.findItem(R.id.option_compare))
-                        .setVisible(false);
-                ((MenuItem) menu.findItem(R.id.option_unlocks))
-                        .setVisible(false);
-
-            } else {
-
-                menu.removeItem(R.id.option_friendadd);
-                menu.removeItem(R.id.option_frienddel);
-                menu.removeItem(R.id.option_compare);
-                menu.removeItem(R.id.option_unlocks);
-
-            }
 
         }
 
@@ -246,6 +184,10 @@ public class ProfileView extends FragmentActivity implements DefaultFragmentActi
             } else if (viewPager.getCurrentItem() == 1) {
 
                 return fragmentStats.handleSelectedOption(item);
+
+            } else if (viewPager.getCurrentItem() == 2) {
+
+                return fragmentMember.handleSelectedOption(item);
 
             }
 
@@ -299,6 +241,10 @@ public class ProfileView extends FragmentActivity implements DefaultFragmentActi
                 break;
 
             case 2:
+                fragmentMember.createContextMenu(menu, view, menuInfo);
+                break;
+
+            case 3:
                 fragmentFeed.createContextMenu(menu, view, menuInfo);
                 break;
 
@@ -328,6 +274,9 @@ public class ProfileView extends FragmentActivity implements DefaultFragmentActi
         switch (viewPager.getCurrentItem()) {
 
             case 2:
+                return fragmentMember.handleSelectedContextItem(info, item);
+
+            case 3:
                 return fragmentFeed.handleSelectedContextItem(info, item);
 
             default:
@@ -338,10 +287,70 @@ public class ProfileView extends FragmentActivity implements DefaultFragmentActi
         return true;
     }
 
-    public void openStats(ProfileData p) {
+    public void setupFragments() {
 
-        fragmentStats.setProfileData(p);
+        // Do we need to setup the fragments?
+        if (listFragments == null) {
+
+            // Add them to the list
+            listFragments = new Vector<Fragment>();
+            listFragments.add(fragmentOverview = (PlatoonOverviewFragment) Fragment.instantiate(
+                    this, PlatoonOverviewFragment.class.getName()));
+            listFragments.add(fragmentStats = (PlatoonStatsFragment) Fragment.instantiate(this,
+                    PlatoonStatsFragment.class.getName()));
+            listFragments.add(fragmentMember = (PlatoonMemberFragment) Fragment.instantiate(this,
+                    PlatoonMemberFragment.class.getName()));
+            listFragments.add(fragmentFeed = (FeedFragment) Fragment.instantiate(this,
+                    FeedFragment.class.getName()));
+
+            // Add the profileData
+            fragmentOverview.setPlatoonData(platoonData);
+            fragmentStats.setPlatoonData(platoonData);
+            fragmentMember.setPlatoonData(platoonData);
+
+            // We need to set the type
+            fragmentFeed.setTitle(platoonData.getName());
+            fragmentFeed.setType(FeedFragment.TYPE_PLATOON);
+            fragmentFeed.setId(platoonData.getId());
+            fragmentFeed.setCanWrite(false);
+
+            // Get the ViewPager
+            viewPager = (ViewPager) findViewById(R.id.viewpager);
+            tabs = (SwipeyTabs) findViewById(R.id.swipeytabs);
+
+            // Fill the PagerAdapter & set it to the viewpager
+            pagerAdapter = new SwipeyTabsPagerAdapter(
+
+                    fragmentManager,
+                    new String[] {
+                            "OVERVIEW", "STATS", "USERS", "FEED"
+                    },
+                    listFragments,
+                    viewPager,
+                    layoutInflater
+                    );
+            viewPager.setAdapter(pagerAdapter);
+            tabs.setAdapter(pagerAdapter);
+
+            // Make sure the tabs follow
+            viewPager.setOnPageChangeListener(tabs);
+            viewPager.setCurrentItem(0);
+            viewPager.setOffscreenPageLimit(3);
+
+        }
+
+    }
+
+    public void openStats(PlatoonInformation p) {
+
+        fragmentStats.setPlatoonInformation(p);
         fragmentStats.reload();
+
+    }
+
+    public void openMembers(PlatoonInformation p) {
+
+        fragmentMember.showMembers(p);
 
     }
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.ninetwozero.battlelog"
-          android:versionCode="12"
-          android:versionName="1.0.9"
-          android:installLocation="auto"
+          android:versionCode="13"
+          android:versionName="2.0"
+          android:installLocation="internalOnly"
         >
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="8" />
 
@@ -14,7 +14,7 @@
             >
         <activity
                 android:label="@string/app_name"
-                android:name=".Main"
+                android:name=".MainActivity"
                 android:orientation="vertical"
                 android:configChanges="orientation"
                 >
@@ -29,21 +29,21 @@
         </activity>
         <activity
                 android:label="@string/title_main_menu"
-                android:name=".Dashboard"
+                android:name=".Backup_Dashboard"
                 android:orientation="vertical"
                 android:configChanges="orientation"
                 android:windowSoftInputMode="stateHidden"
                 />
         <activity
                 android:label="@string/title_about"
-                android:name=".AboutView"
+                android:name=".AboutActivity"
                 android:orientation="vertical"
                 android:configChanges="orientation"
                 android:windowSoftInputMode="stateHidden"
                 />
         <activity
                 android:label="@string/title_main_menu"
-                android:name=".ViewPagerDashboard"
+                android:name=".DashboardActivity"
                 android:orientation="vertical"
                 android:configChanges="orientation"
                 android:windowSoftInputMode="stateHidden"
@@ -56,87 +56,106 @@
                 />
         <activity
                 android:label="@string/title_profile"
-                android:name=".ProfileView"
+                android:name=".ProfileActivity"
                 android:configChanges="orientation"
                 />
         <activity
                 android:label="@string/title_platoon"
-                android:name=".PlatoonView"
+                android:name=".PlatoonActivity"
                 android:configChanges="orientation"
                 />
         <activity
                 android:label="@string/title_platoon_invite"
-                android:name=".PlatoonInviteView"
+                android:name=".PlatoonInviteActivity"
                 android:configChanges="orientation"
                 />
         <activity
                 android:label="@string/title_performance"
-                android:name=".StatsView"
+                android:name=".StatsActivity"
                 android:configChanges="orientation"
                 />
         <activity
                 android:label="@string/title_chat"
-                android:name=".ChatView"
+                android:name=".ChatActivity"
                 android:configChanges="orientation"
                 />
         <activity
                 android:label="@string/title_comments"
-                android:name=".SinglePostView"
+                android:name=".SinglePostActivity"
                 android:configChanges="orientation"
                 android:windowSoftInputMode="stateHidden"
                 />
         <activity
                 android:label="@string/title_comparing_battle_scars"
-                android:name=".CompareView"
+                android:name=".CompareActivity"
                 android:configChanges="orientation"
                 />
         <activity
                 android:label="@string/title_forum"
-                android:name=".BoardView"
+                android:name=".BoardActivity"
                 android:configChanges="orientation"
                 />
         <activity
-                android:label="@string/title_forum_view"
-                android:name=".ForumView"
+                android:label="BF3 Battlelog - Browsing the forums"
+                android:name=".ForumActivity"
                 android:configChanges="orientation"
                 />
         <activity
                 android:label="@string/title_forum_search"
-                android:name=".ForumSearchView"
+                android:name=".ForumSearchActivity"
                 android:configChanges="orientation"
                 />
         <activity
                 android:label="@string/title_thread_view"
-                android:name=".ForumThreadView"
+                android:name=".ForumThreadActivity"
                 android:configChanges="orientation"
                 />
         <activity
                 android:label="@string/title_forum_report"
-                android:name=".ForumReportView"
+                android:name=".ForumReportActivity"
                 android:configChanges="orientation"
                 />
         <activity
                 android:label="@string/title_unlocks"
-                android:name=".UnlockView"
+                android:name=".UnlockActivity"
                 android:configChanges="orientation"
                 />
         <activity
                 android:label="@string/title_search"
-                android:name=".SearchView"
+                android:name=".SearchActivity"
                 android:configChanges="orientation"
                 />
         <activity
                 android:label="@string/title_settings"
-                android:name=".SettingsView"
+                android:name=".SettingsActivity"
+                android:configChanges="orientation"
+                android:theme="@android:style/Theme.Light"
+                />
+        <activity
+                android:label="@string/title_profile_settings"
+                android:name=".ProfileSettingsActivity"
                 android:configChanges="orientation"
                 android:theme="@android:style/Theme.Light"
                 />
         <activity
                 android:label="@string/title_assignments"
-                android:name=".AssignmentView"
+                android:name=".AssignmentActivity"
                 android:configChanges="orientation"
                 />
-        <receiver android:name="com.ninetwozero.battlelog.widgets.BattlelogAppWidgetProvider" android:label="@string/widget_name">
+        <activity
+                android:label="@string/title_platoon_new"
+                android:name=".PlatoonCreateActivity"
+                android:configChanges="orientation"
+                />
+
+        <!-- 	TODO: This currently kills the app (and the phone) so it won\'t be active.
+          <receiver android:name="com.ninetwozero.battlelog.broadcastreceivers.NetworkReceiver">
+              <intent-filter>
+                  <action android:name="android.net.conn.CONNECTIVITY_CHANGE"></action>
+              </intent-filter>
+          </receiver>
+          -->
+        <receiver android:name=".widgets.BattlelogAppWidgetProvider" android:label="@string/widget_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.ACTION_WIDGET_RECEIVER" />
@@ -151,4 +170,5 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 </manifest>

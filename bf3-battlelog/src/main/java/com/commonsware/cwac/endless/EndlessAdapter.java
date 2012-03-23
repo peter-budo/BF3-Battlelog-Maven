@@ -15,6 +15,8 @@
 
 package com.commonsware.cwac.endless;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -22,9 +24,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
-import com.commonsware.cwac.adapter.AdapterWrapper;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import com.commonsware.cwac.adapter.AdapterWrapper;
 
 /**
  * Adapter that assists another adapter in appearing endless. For example, this
