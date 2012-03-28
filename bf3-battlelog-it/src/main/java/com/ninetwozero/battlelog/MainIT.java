@@ -13,9 +13,9 @@ import com.jayway.android.robotium.solo.Solo;
 import static android.test.MoreAsserts.assertMatchesRegex;
 import static android.test.ViewAsserts.assertOnScreen;
 
-public class MainIT extends ActivityInstrumentationTestCase2<Main> {
+public class MainIT extends ActivityInstrumentationTestCase2<MainActivity> {
 
-    private Main activity;
+    private MainActivity activity;
     private EditText fieldEmail;
     private EditText fieldPassword;
     private CheckBox checkboxSave;
@@ -24,7 +24,7 @@ public class MainIT extends ActivityInstrumentationTestCase2<Main> {
     private Solo solo;
 
     public MainIT() {
-        super("com.ninetwozero.battlelog", Main.class);
+        super("com.ninetwozero.battlelog", MainActivity.class);
     }
 
     @Override
@@ -62,10 +62,10 @@ public class MainIT extends ActivityInstrumentationTestCase2<Main> {
         assertOnScreen(origin, checkboxSave);
         assertOnScreen(origin, buttonLogin);
         assertOnScreen(origin, aboutSlider);
-        
+
         String emailHint = activity.getResources().getString(R.string.info_hint_email);
         assertMatchesRegex(emailHint, fieldEmail.getHint().toString());
-        
+
         String passwordHint = activity.getResources().getString(R.string.info_hint_password);
         assertMatchesRegex(passwordHint, fieldPassword.getHint().toString());
     }
@@ -83,7 +83,7 @@ public class MainIT extends ActivityInstrumentationTestCase2<Main> {
         buttonLogin.performClick();
         assertTrue(solo.waitForText(resourceToString(R.string.general_invalid_email)));
     }
-    
+
     @UiThreadTest
     public void testAboutSlidingDrawer(){
         final View origin = decorView();

@@ -14,7 +14,7 @@
     </modules>
 
     <properties>
-        <app.version>1.0.8-SNAPSHOT</app.version>
+        <app.version>1.0.9-SNAPSHOT</app.version>
         <android.maven.plugin>3.1.2-SNAPSHOT</android.maven.plugin>
         <com.google.android>2.2.1</com.google.android>
         <maven.compiler.plugin>2.3.2</maven.compiler.plugin>
@@ -76,8 +76,8 @@
                     <version>${maven.compiler.plugin}</version>
                     <inherited>true</inherited>
                     <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
+                        <source>1.5</source>
+                        <target>1.5</target>
                     </configuration>
                 </plugin>
                 <plugin>
