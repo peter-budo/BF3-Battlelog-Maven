@@ -21,7 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ninetwozero.battlelog.R;
@@ -82,12 +81,6 @@ public class RequestListAdapter extends BaseAdapter {
         // Set the TextView
         ((TextView) convertView.findViewById(R.id.text_user))
                 .setText(currentProfile.getUsername());
-
-        // Hot-wire the views
-        ((ImageView) convertView.findViewById(R.id.button_accept))
-                .setTag(currentProfile);
-        ((ImageView) convertView.findViewById(R.id.button_decline))
-                .setTag(currentProfile);
 
         // Set the tag so it's up for grabs
         convertView.setTag(currentProfile);

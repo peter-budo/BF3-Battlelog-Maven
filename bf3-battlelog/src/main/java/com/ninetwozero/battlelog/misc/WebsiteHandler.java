@@ -25,32 +25,26 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sf.andhsli.hotspotlogin.SimpleCrypto;
-
 import org.apache.http.HttpEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.ninetwozero.battlelog.R;
 import com.ninetwozero.battlelog.datatypes.AssignmentData;
-import com.ninetwozero.battlelog.datatypes.Board;
-import com.ninetwozero.battlelog.datatypes.Board.SearchResult;
-import com.ninetwozero.battlelog.datatypes.Board.ThreadData;
 import com.ninetwozero.battlelog.datatypes.ChatMessage;
 import com.ninetwozero.battlelog.datatypes.CommentData;
 import com.ninetwozero.battlelog.datatypes.FeedItem;
+import com.ninetwozero.battlelog.datatypes.ForumData;
+import com.ninetwozero.battlelog.datatypes.ForumPostData;
+import com.ninetwozero.battlelog.datatypes.ForumSearchResult;
+import com.ninetwozero.battlelog.datatypes.ForumThreadData;
 import com.ninetwozero.battlelog.datatypes.FriendListDataWrapper;
 import com.ninetwozero.battlelog.datatypes.GeneralSearchResult;
 import com.ninetwozero.battlelog.datatypes.NewsData;
@@ -68,16 +62,12 @@ import com.ninetwozero.battlelog.datatypes.ProfileComparator;
 import com.ninetwozero.battlelog.datatypes.ProfileData;
 import com.ninetwozero.battlelog.datatypes.ProfileInformation;
 import com.ninetwozero.battlelog.datatypes.RequestHandlerException;
-import com.ninetwozero.battlelog.datatypes.SessionKeeperPackage;
-import com.ninetwozero.battlelog.datatypes.ShareableCookie;
 import com.ninetwozero.battlelog.datatypes.TopStatsComparator;
 import com.ninetwozero.battlelog.datatypes.UnlockComparator;
 import com.ninetwozero.battlelog.datatypes.UnlockData;
 import com.ninetwozero.battlelog.datatypes.UnlockDataWrapper;
 import com.ninetwozero.battlelog.datatypes.WeaponStats;
 import com.ninetwozero.battlelog.datatypes.WebsiteHandlerException;
-import com.ninetwozero.battlelog.fragments.FeedFragment;
-import com.ninetwozero.battlelog.services.BattlelogService;
 
 /* 
  * Methods of this class should be loaded in AsyncTasks, as they would probably lock up the GUI
@@ -1059,17 +1049,24 @@ public class WebsiteHandler {
                 JSONObject tempObj, presenceObj;
 
                 // Arraylists!
+                List<ProfileData> friends = new ArrayList<ProfileData>();
                 List<ProfileData> profileRowRequests = new ArrayList<ProfileData>();
                 List<ProfileData> profileRowPlaying = new ArrayList<ProfileData>();
                 List<ProfileData> profileRowOnline = new ArrayList<ProfileData>();
                 List<ProfileData> profileRowOffline = new ArrayList<ProfileData>();
 
                 // Grab the lengths
-                int numRequests = requestsObject.length(), numFriends = friendsObject
-                        .length();
+                int numRequests = requestsObject.length();
+                int numFriends = friendsObject.length();
+                int numPlaying = 0;
+                int numOnline = 0;
+                int numOffline = 0;
 
                 // Got requests?
                 if (numRequests > 0) {
+
+                    // Temp
+                    ProfileData tempProfileData;
 
                     // Iterate baby!
                     for (int i = 0, max = requestsObject.length(); i < max; i++) {
@@ -1080,28 +1077,33 @@ public class WebsiteHandler {
                         // Save it
                         profileRowRequests.add(
 
-                                new ProfileData(
+                                tempProfileData = new ProfileData(
                                         Long.parseLong(tempObj.getString("userId")),
                                         tempObj.getString("username"),
                                         new PersonaData[] {},
                                         tempObj.optString("gravatarMd5", "")
 
-                                )
+                                        )
 
                                 );
+
+                        tempProfileData.setFriend(false);
 
                     }
 
                     // Sort it out
                     Collections.sort(profileRowRequests,
                             new ProfileComparator());
+                    friends.add(new ProfileData(c.getString(R.string.info_xml_friend_requests)));
+                    friends.addAll(profileRowRequests);
 
                 }
 
+                // Do we have more than... well, at least one friend?
                 if (numFriends > 0) {
 
                     // Iterate baby!
-                    for (int i = 0, max = friendsObject.length(); i < max; i++) {
+                    for (int i = 0; i < numFriends; i++) {
 
                         // Grab the object
                         tempObj = friendsObject.optJSONObject(i);
@@ -1163,55 +1165,36 @@ public class WebsiteHandler {
                     }
 
                     // How many "online" friends do we have? Playing + idle
-                    numFriends = profileRowPlaying.size()
-                            + profileRowOnline.size();
+                    numPlaying = profileRowPlaying.size();
+                    numOnline = profileRowOnline.size();
+                    numOffline = profileRowOffline.size();
 
                     // First add the separators)...
-                    if (numFriends > 0) {
+                    if (numPlaying > 0) {
 
-                        profileRowPlaying.add(
-
-                                new ProfileData(
-
-                                        0, "00000000", new PersonaData(c
-                                                .getString(R.string.info_txt_friends_online)), null
-
-                                )
-
-                                );
-
+                        Collections.sort(profileRowPlaying, new ProfileComparator());
+                        friends.add(new ProfileData(c.getString(R.string.info_txt_friends_playing)));
+                        friends.addAll(profileRowPlaying);
                     }
 
-                    if (profileRowOffline.size() > 0) {
+                    if (numOnline > 0) {
 
-                        profileRowOffline.add(
-
-                                new ProfileData(
-
-                                        0, "00000001", new PersonaData(c
-                                                .getString(R.string.info_txt_friends_offline)),
-                                        null
-
-                                )
-
-                                );
-
+                        // ...then we sort it out...
+                        Collections.sort(profileRowOnline, new ProfileComparator());
+                        friends.add(new ProfileData(c.getString(R.string.info_txt_friends_online)));
+                        friends.addAll(profileRowOnline);
                     }
 
-                    // ...then we sort it out...
-                    Collections
-                            .sort(profileRowPlaying, new ProfileComparator());
-                    Collections.sort(profileRowOnline, new ProfileComparator());
-                    Collections
-                            .sort(profileRowOffline, new ProfileComparator());
+                    if (numOffline > 0) {
 
-                    // ...sprinkle a little merging here and there...
-                    profileRowPlaying.addAll(profileRowOnline);
-
+                        Collections.sort(profileRowOffline, new ProfileComparator());
+                        friends.add(new ProfileData(c.getString(R.string.info_txt_friends_offline)));
+                        friends.addAll(profileRowOffline);
+                    }
                 }
 
-                return new FriendListDataWrapper(profileRowRequests,
-                        profileRowPlaying, profileRowOffline);
+                return new FriendListDataWrapper(friends, numRequests, numPlaying, numOnline,
+                        numOffline);
 
             } else {
 
@@ -1947,7 +1930,7 @@ public class WebsiteHandler {
                 friends = WebsiteHandler.getFriends(
 
                         PreferenceManager.getDefaultSharedPreferences(c)
-                                .getString(Constants.SP_BL_CHECKSUM, ""), false
+                                .getString(Constants.SP_BL_PROFILE_CHECKSUM, ""), false
 
                         );
 
@@ -2420,15 +2403,15 @@ public class WebsiteHandler {
             // What's the url?
             switch (type) {
 
-                case FeedFragment.TYPE_GLOBAL:
+                case FeedItem.TYPE_GLOBAL:
                     url = Constants.URL_FRIEND_FEED;
                     break;
 
-                case FeedFragment.TYPE_PROFILE:
+                case FeedItem.TYPE_PROFILE:
                     url = Constants.URL_PROFILE_FEED.replace("{PID}", id + "");
                     break;
 
-                case FeedFragment.TYPE_PLATOON:
+                case FeedItem.TYPE_PLATOON:
                     url = Constants.URL_PLATOON_FEED.replace("{PLATOON_ID}", id + "");
                     break;
 
@@ -4893,7 +4876,7 @@ public class WebsiteHandler {
         try {
 
             // Init to win it
-            List<Board.Forum> forums = new ArrayList<Board.Forum>();
+            List<ForumData> forums = new ArrayList<ForumData>();
             String title = "";
 
             // Setup a RequestHandler
@@ -4930,7 +4913,7 @@ public class WebsiteHandler {
 
                         forums.add(
 
-                                new Board.Forum(
+                                new ForumData(
 
                                         Long.parseLong(currObject.getString("id")), Long
                                                 .parseLong(currObject.getString("categoryId")),
@@ -4955,7 +4938,7 @@ public class WebsiteHandler {
 
                     forums.add(
 
-                            new Board.Forum(
+                            new ForumData(
 
                                     Long.parseLong(currObject.getString("id")), Long
                                             .parseLong(currObject.getString("categoryId")), 0,
@@ -4986,13 +4969,13 @@ public class WebsiteHandler {
 
     }
 
-    public static Board.Forum getThreadsForForum(String locale, long forumId)
+    public static ForumData getThreadsForForum(String locale, long forumId)
             throws WebsiteHandlerException {
 
         try {
 
             // Init to winit
-            List<Board.ThreadData> threads = new ArrayList<Board.ThreadData>();
+            List<ForumThreadData> threads = new ArrayList<ForumThreadData>();
 
             // Setup a RequestHandler
             RequestHandler rh = new RequestHandler();
@@ -5017,7 +5000,7 @@ public class WebsiteHandler {
 
                 // Yay, we found at least one sticky
                 if (i == 0) {
-                    threads.add(new Board.ThreadData("Stickies"));
+                    threads.add(new ForumThreadData("Stickies"));
                 }
 
                 // Get the current object
@@ -5029,9 +5012,11 @@ public class WebsiteHandler {
                 // Let's store them
                 threads.add(
 
-                        new Board.ThreadData(
+                        new ForumThreadData(
 
-                                Long.parseLong(currObject.getString("id")), currObject
+                                Long.parseLong(currObject.getString("id")),
+                                forumId,
+                                currObject
                                         .getLong("creationDate"), currObject
                                         .getLong("lastPostDate"), currObject
                                         .getInt("numberOfOfficialPosts"), currObject
@@ -5063,7 +5048,7 @@ public class WebsiteHandler {
             for (int i = numStickies, max = threadArray.length(); i < max; i++) {
 
                 if (i == numStickies) {
-                    threads.add(new Board.ThreadData("Threads"));
+                    threads.add(new ForumThreadData("Threads"));
                 }
 
                 // Get the current object
@@ -5075,15 +5060,16 @@ public class WebsiteHandler {
                 // Let's store them
                 threads.add(
 
-                        new Board.ThreadData(
+                        new ForumThreadData(
 
-                                Long.parseLong(currObject.getString("id")), currObject
+                                Long.parseLong(currObject.getString("id")),
+                                forumId, currObject
                                         .getLong("creationDate"), currObject
                                         .getLong("lastPostDate"), currObject
                                         .getInt("numberOfOfficialPosts"), currObject
                                         .getInt("numberOfPosts"),
                                 currObject.getString("title"), new ProfileData(
-                                        Long.parseLong(ownerObject.getString("ownerId")),
+                                        Long.parseLong(ownerObject.getString("userId")),
                                         ownerObject.getString("username"),
                                         new PersonaData[] {},
                                         ownerObject.getString("gravatarMd5")
@@ -5104,7 +5090,7 @@ public class WebsiteHandler {
 
             }
 
-            return new Board.Forum(
+            return new ForumData(
 
                     forumObject.getString("title"),
                     forumObject.getString("description"),
@@ -5123,13 +5109,13 @@ public class WebsiteHandler {
 
     }
 
-    public static Board.ThreadData getPostsForThread(String locale,
+    public static ForumThreadData getPostsForThread(String locale,
             long threadId) throws WebsiteHandlerException {
 
         try {
 
             // Init to winit
-            List<Board.PostData> posts = new ArrayList<Board.PostData>();
+            List<ForumPostData> posts = new ArrayList<ForumPostData>();
 
             // Setup a RequestHandler
             RequestHandler rh = new RequestHandler();
@@ -5160,13 +5146,13 @@ public class WebsiteHandler {
                 // Let's store them
                 posts.add(
 
-                        new Board.PostData(
+                        new ForumPostData(
 
                                 Long.parseLong(currObject.getString("id")), Long
                                         .parseLong(currObject.getString("creationDate")), Long
                                         .parseLong(currObject.getString("threadId")),
                                 new ProfileData(
-                                        Long.parseLong(ownerObject.getString("ownerId")),
+                                        Long.parseLong(ownerObject.getString("userId")),
                                         ownerObject.getString("username"),
                                         new PersonaData[] {},
                                         ownerObject.getString("gravatarMd5")
@@ -5182,9 +5168,11 @@ public class WebsiteHandler {
 
             }
 
-            return new Board.ThreadData(
+            return new ForumThreadData(
 
-                    threadObject.getLong("id"), threadObject.getLong("creationDate"),
+                    Long.parseLong(threadObject.getString("id")),
+                    Long.parseLong(threadObject.getString("forumId")),
+                    threadObject.getLong("creationDate"),
                     threadObject.getLong("lastPostDate"),
                     threadObject.getInt("numberOfOfficialPosts"),
                     threadObject.getInt("numberOfPosts"),
@@ -5220,14 +5208,15 @@ public class WebsiteHandler {
         } catch (Exception ex) {
 
             ex.printStackTrace();
-            throw new WebsiteHandlerException("No threads found.");
+            throw new WebsiteHandlerException("No thread data found.");
 
         }
 
     }
 
     public static boolean postReplyInThread(final Context c, final String body,
-            final String chksm, final long tId) {
+            final String chksm, final ForumThreadData threadData, final boolean cache,
+            final long uid) {
 
         try {
 
@@ -5237,7 +5226,7 @@ public class WebsiteHandler {
             // POST!
             String httpContent = rh.post(
 
-                    Constants.URL_FORUM_POST.replace("{THREAD_ID}", tId + ""),
+                    Constants.URL_FORUM_POST.replace("{THREAD_ID}", threadData.getId() + ""),
                     new PostData[] {
 
                             new PostData(Constants.FIELD_NAMES_FORUM_POST[0],
@@ -5249,8 +5238,24 @@ public class WebsiteHandler {
 
                     );
 
-            // Let's do it
-            return (!"".equals(httpContent));
+            // How'd it go?
+            if (!"".equals(httpContent)) {
+
+                // Are we to cache it?
+                if (cache) {
+
+                    return CacheHandler.Forum.insert(c, threadData, uid) > -1;
+
+                }
+
+                // Return
+                return true;
+
+            } else {
+
+                return false;
+
+            }
 
         } catch (Exception ex) {
 
@@ -5299,7 +5304,7 @@ public class WebsiteHandler {
 
     }
 
-    public static ArrayList<Board.SearchResult> searchInForums(
+    public static ArrayList<ForumSearchResult> searchInForums(
 
             final Context c, final String keyword
 
@@ -5307,7 +5312,7 @@ public class WebsiteHandler {
 
         // Init
         RequestHandler rh = new RequestHandler();
-        List<Board.SearchResult> threads = new ArrayList<Board.SearchResult>();
+        List<ForumSearchResult> threads = new ArrayList<ForumSearchResult>();
 
         try {
 
@@ -5335,7 +5340,7 @@ public class WebsiteHandler {
 
                         threads.add(
 
-                                new Board.SearchResult(
+                                new ForumSearchResult(
 
                                         Long.parseLong(currentItem.getString("docid")
                                                 .substring(2)),
@@ -5361,7 +5366,7 @@ public class WebsiteHandler {
                 }
             }
 
-            return (ArrayList<SearchResult>) threads;
+            return (ArrayList<ForumSearchResult>) threads;
 
         } catch (Exception ex) {
 
@@ -5721,13 +5726,13 @@ public class WebsiteHandler {
 
     }
 
-    public static ArrayList<ThreadData> getThreadsForForum(long forumId,
-            int page, String locale) throws WebsiteHandlerException {
+    public static List<ForumThreadData> getThreadsForForum(String locale, long forumId,
+            int page) throws WebsiteHandlerException {
 
         try {
 
             // Init to winit
-            List<Board.ThreadData> threads = new ArrayList<Board.ThreadData>();
+            List<ForumThreadData> threads = new ArrayList<ForumThreadData>();
 
             // Setup a RequestHandler
             RequestHandler rh = new RequestHandler();
@@ -5751,7 +5756,7 @@ public class WebsiteHandler {
 
                 // Yay, we found at least one sticky
                 if (i == 0 && page == 1) {
-                    threads.add(new Board.ThreadData("Stickies"));
+                    threads.add(new ForumThreadData("Stickies"));
                 }
 
                 // Get the current object
@@ -5763,15 +5768,16 @@ public class WebsiteHandler {
                 // Let's store them
                 threads.add(
 
-                        new Board.ThreadData(
+                        new ForumThreadData(
 
-                                Long.parseLong(currObject.getString("id")), currObject
+                                Long.parseLong(currObject.getString("id")),
+                                forumId, currObject
                                         .getLong("creationDate"), currObject
                                         .getLong("lastPostDate"), currObject
                                         .getInt("numberOfOfficialPosts"), currObject
                                         .getInt("numberOfPosts"),
                                 currObject.getString("title"), new ProfileData(
-                                        Long.parseLong(ownerObject.getString("ownerId")),
+                                        Long.parseLong(ownerObject.getString("userId")),
                                         ownerObject.getString("username"),
                                         new PersonaData[] {},
                                         ownerObject.getString("gravatarMd5")
@@ -5796,7 +5802,7 @@ public class WebsiteHandler {
             for (int i = numStickies, max = threadArray.length(); i < max; i++) {
 
                 if (i == numStickies && page == 1) {
-                    threads.add(new Board.ThreadData("Threads"));
+                    threads.add(new ForumThreadData("Threads"));
                 }
 
                 // Get the current object
@@ -5808,15 +5814,16 @@ public class WebsiteHandler {
                 // Let's store them
                 threads.add(
 
-                        new Board.ThreadData(
+                        new ForumThreadData(
 
-                                Long.parseLong(currObject.getString("id")), currObject
+                                Long.parseLong(currObject.getString("id")),
+                                forumId, currObject
                                         .getLong("creationDate"), currObject
                                         .getLong("lastPostDate"), currObject
                                         .getInt("numberOfOfficialPosts"), currObject
                                         .getInt("numberOfPosts"),
                                 currObject.getString("title"), new ProfileData(
-                                        Long.parseLong(ownerObject.getString("ownerId")),
+                                        Long.parseLong(ownerObject.getString("userId")),
                                         ownerObject.getString("username"),
                                         new PersonaData[] {},
                                         ownerObject.getString("gravatarMd5")
@@ -5837,7 +5844,7 @@ public class WebsiteHandler {
 
             }
 
-            return (ArrayList<ThreadData>) threads;
+            return threads;
 
         } catch (Exception ex) {
 
@@ -5848,13 +5855,13 @@ public class WebsiteHandler {
 
     }
 
-    public static ArrayList<Board.PostData> getPostsForThread(long threadId,
+    public static List<ForumPostData> getPostsForThread(long threadId,
             int page, String locale) throws WebsiteHandlerException {
 
         try {
 
             // Init to winit
-            List<Board.PostData> posts = new ArrayList<Board.PostData>();
+            List<ForumPostData> posts = new ArrayList<ForumPostData>();
 
             // Setup a RequestHandler
             RequestHandler rh = new RequestHandler();
@@ -5865,7 +5872,10 @@ public class WebsiteHandler {
                             .replace("{PAGE}", page + ""), 1
 
                     );
-
+            Log.d(Constants.DEBUG_TAG,
+                    "The link => " + Constants.URL_FORUM_THREAD.replace("{LOCALE}", locale)
+                            .replace("{THREAD_ID}", threadId + "")
+                            .replace("{PAGE}", page + ""));
             // Let's parse it!
             JSONArray postArray = new JSONObject(httpContent).getJSONObject(
                     "context").getJSONArray("posts");
@@ -5880,13 +5890,13 @@ public class WebsiteHandler {
                 // Let's store them
                 posts.add(
 
-                        new Board.PostData(
+                        new ForumPostData(
 
                                 Long.parseLong(currObject.getString("id")), Long
                                         .parseLong(currObject.getString("creationDate")), Long
                                         .parseLong(currObject.getString("threadId")),
                                 new ProfileData(
-                                        Long.parseLong(ownerObject.getString("ownerId")),
+                                        Long.parseLong(ownerObject.getString("userId")),
                                         ownerObject.getString("username"),
                                         new PersonaData[] {},
                                         ownerObject.getString("gravatarMd5")
@@ -5902,12 +5912,12 @@ public class WebsiteHandler {
 
             }
 
-            return (ArrayList<Board.PostData>) posts;
+            return (ArrayList<ForumPostData>) posts;
 
         } catch (Exception ex) {
 
             ex.printStackTrace();
-            throw new WebsiteHandlerException("No threads found.");
+            throw new WebsiteHandlerException("No posts found for the thread.");
 
         }
 
